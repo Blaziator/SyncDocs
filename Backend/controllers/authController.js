@@ -48,7 +48,7 @@ export const login = async(req, res)=>{
     const {email, password, claimDocId} = req.body;
 
     try{
-        const existingUser = await User.findOne({email}).select(+password);
+        const existingUser = await User.findOne({email}).select("+password");
 
         if(!existingUser){
             return res.status(401).json({message: "Invalid email or password"});
@@ -95,7 +95,7 @@ export const logout = (req, res)=>{
 export const getMe = async(req, res)=>{
     try{
         const existingUser = await User.findById(req.userId);
-        if(!user){
+        if(!existingUser){
             return res.status(404).json({ message: "User not found" });
         }
 
