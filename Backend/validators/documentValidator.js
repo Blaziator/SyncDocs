@@ -13,7 +13,7 @@ export const claimDocumentSchema = Joi.object({
            .length(24)
            .hex()
            .required()
-           .message({
+           .messages({
                "string.length": "Invalid document ID",
                "string.hex": "Invalid document ID"
            })
