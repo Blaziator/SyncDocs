@@ -6,6 +6,8 @@ import Register from "./pages/Register/Register.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Editor from "./pages/Editor/Editor.jsx";
 
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
 function App() {
 
   return (
@@ -15,7 +17,13 @@ function App() {
           <Route path="/" element={<Landing/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/dashboard" element={<Dashboard/>}/>
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard/>
+              </ProtectedRoute>
+            }/>
           <Route path="/doc/:docId" element={<Editor/>}/>
         </Routes>
       </Router>
