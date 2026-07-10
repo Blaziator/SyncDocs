@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="389 144 652 852" role="img" aria-labelledby="title desc">
+  <title id="title">Blue document icon with cursor</title>
+  <desc id="desc">A rounded blue file document with a pale folded corner and a dark pointer cursor over the lower right.</desc>
+  <defs>
+    <linearGradient id="fileFill" x1="365" y1="190" x2="923" y2="926" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4648f8"/>
+      <stop offset="45%" stop-color="#403df4"/>
+      <stop offset="100%" stop-color="#484bff"/>
+    </linearGradient>
+
+    <linearGradient id="foldFill" x1="751" y1="213" x2="929" y2="449" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#eef0f7"/>
+      <stop offset="58%" stop-color="#e7e9f2"/>
+      <stop offset="100%" stop-color="#dfe2ec"/>
+    </linearGradient>
+
+    <linearGradient id="foldShade" x1="723" y1="214" x2="819" y2="465" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#303067" stop-opacity=".16"/>
+      <stop offset="72%" stop-color="#303067" stop-opacity=".06"/>
+      <stop offset="100%" stop-color="#303067" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="cursorFill" x1="788" y1="700" x2="901" y2="904" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#17223b"/>
+      <stop offset="100%" stop-color="#101a31"/>
+    </linearGradient>
+
+    <filter id="fileShadow" x="398" y="184" width="592" height="725" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="13" stdDeviation="18" flood-color="#2b2d8f" flood-opacity=".13"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#1d1f7c" flood-opacity=".18"/>
+    </filter>
+
+    <filter id="cursorShadow" x="735" y="674" width="238" height="263" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="-8" dy="10" stdDeviation="7" flood-color="#080d1c" flood-opacity=".22"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#080d1c" flood-opacity=".25"/>
+    </filter>
+  </defs>
+
+  <rect x="410" y="165" width="610" height="810" fill="none" stroke="#ffffff" stroke-width="42"/>
+
+  <g filter="url(#fileShadow)">
+    <path fill="url(#fileFill)" d="
+      M 522 205
+      H 741
+      C 757 205 772 212 783 224
+      L 960 423
+      C 975 440 982 461 982 483
+      V 819
+      C 982 855 955 883 919 883
+      H 521
+      C 486 883 459 856 459 821
+      V 268
+      C 459 232 486 205 522 205
+      Z"/>
+
+    <path fill="url(#foldFill)" d="
+      M 762 207
+      C 770 211 777 216 783 224
+      L 960 423
+      C 967 431 973 439 976 448
+      H 800
+      C 779 448 762 431 762 410
+      Z"/>
+
+    <path fill="url(#foldShade)" d="
+      M 742 205
+      C 754 205 766 211 775 220
+      L 783 228
+      C 769 221 762 225 762 246
+      V 410
+      C 762 431 779 448 800 448
+      H 835
+      C 806 457 784 456 771 443
+      C 756 427 761 405 761 386
+      V 230
+      C 761 214 755 207 742 205
+      Z"/>
+  </g>
+
+  <g filter="url(#cursorShadow)">
+    <path fill="url(#cursorFill)" d="
+      M 769 700
+      C 765 687 779 695 786 699
+      L 947 789
+      C 963 798 962 812 945 819
+      L 903 837
+      L 934 867
+      C 945 878 945 891 934 901
+      L 925 909
+      C 914 919 902 917 892 906
+      L 862 876
+      L 846 918
+      C 839 936 824 935 819 916
+      Z"/>
+    <path fill="#25304c" opacity=".2" d="
+      M 785 700
+      L 947 789
+      C 963 798 962 812 945 819
+      L 903 837
+      L 917 851
+      L 775 706
+      C 778 696 782 698 785 700
+      Z"/>
+  </g>
+</svg>

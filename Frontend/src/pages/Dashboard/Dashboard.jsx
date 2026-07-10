@@ -1,7 +1,116 @@
-import React from 'react'
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../api/axiosInstance.js";
+import DocumentRow from "../../components/DocumentRow/DocumentRow.jsx";
+import Header from "../../components/Header/Header.jsx";
+import styles from "./Dashboard.module.css";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { Plus } from "lucide-react";
 
 export default function Dashboard() {
+
+  const {user} = useAuth();
+  const navigate = useNavigate();
+
+  const [docs, setDocs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{
+
+    async function fetchDocs(){
+      setLoading(true);
+
+      try{
+        const response = await axiosInstance.get("/documents/dashboard");
+        setDocs(response.data.allDoc);
+  
+      }catch(err){
+        setError(err.response?.data?.message || "Something Went Wrong. Try again");
+
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    fetchDocs();
+
+  }, []);
+
+  const hour = new Date().getHours();
+  let greetingMsg = "Hello";
+
+  if(hour < 12){
+      greetingMsg = "Good Morning";
+  }
+  else if(hour < 18){
+      greetingMsg = "Good Afternoon";
+  }
+  else{
+      greetingMsg = "Good Evening";
+  }
+
+  const handleCreateDocument = async()=>{
+    try{
+      const response = await axiosInstance.post("/documents/create", {});
+      console.log(response);
+      navigate(`/doc/${response.data.newDoc._id}`);
+    }catch(err){
+      setError(err.response?.data?.message || "Failed to create document.");
+    }
+  };
+
+  const handleDelete = async(docId)=>{
+    try{
+
+      await axiosInstance.delete(`/documents/${docId}`);
+      setDocs((prev)=> prev.filter((doc) => doc._id !== docId));
+
+    }catch(err){
+      setError(err.response?.data?.message || "Failed to delete document.");
+    }
+  };
+
+  const filteredDocs = docs.filter((doc)=> doc.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
   return (
-    <div>Dashboard</div>
-  )
+
+    <div className={styles.dashboardPage}>      
+      <Header searchQuery = {searchQuery} setSearchQuery = {setSearchQuery}/>
+
+    <div className={styles.greeting}>
+
+      <h1>{greetingMsg}, {user.name} 👋</h1>
+      <p>{docs.length === 0? "Ready to create your first document?":"Everything is synced and ready."}</p>
+
+    </div>
+
+      <div className={styles.content}>
+        <div className={styles.toolbar}>
+          
+          <h2>All Documents</h2>
+          <button className={styles.createBtn} onClick={handleCreateDocument}> <Plus size={18}/> New Document</button>
+
+        </div>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        {loading? (
+          <p className={styles.statusText}>Loading your documents...</p>
+        ): docs.length === 0 ? (
+          <p className={styles.statusText}>You have no documents yet. Click "New Document" to get started.</p>
+        ): filteredDocs.length === 0 ? (
+          <p className={styles.statusText}>No documents match your search.</p>
+        ): (
+          <div className={styles.list}>
+            {filteredDocs.map((doc)=> (
+              <DocumentRow key={doc._id} doc={doc} onDelete={handleDelete}/>
+            ))}
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
 }
