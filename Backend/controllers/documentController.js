@@ -77,6 +77,35 @@
         }
     };
 
+    export const updateDocument = async(req, res)=>{
+
+        try{
+
+            const {docId} = req.params;
+            const {title} = req.body;
+
+            const doc = await Document.findById(docId);
+
+            if(!doc){
+                return res.status(404).json({message: "Document not found"});
+            }
+
+            if(!doc.owner || doc.owner.toString() !== req.userId){
+                return res.status(403).json({ message: "Only the owner can rename this document" });
+            }
+
+            doc.title = title;
+            await doc.save();
+
+            res.status(200).json({doc});
+
+        }catch(err){
+            console.error(err);
+            res.status(500).json({ message: "Server error while updating document" });
+        }
+
+    }
+
     export const claimDocument = async(req, res)=>{
 
         try{
