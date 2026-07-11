@@ -46,3 +46,22 @@
 .deleteBtn:hover {
     background: #fef2f2;
 }
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.actionBtn {
+    background: transparent;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+}
+
+.actionBtn:hover {
+    background: #f3f4f6;
+}

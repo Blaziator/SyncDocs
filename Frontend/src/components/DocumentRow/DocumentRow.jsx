@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Shredder, SquarePen, FileText } from "lucide-react";
+import { Trash2, SquarePen, FileText } from "lucide-react";
 import styles from "./DocumentRow.module.css";
 
-export default function DocumentRow({ doc, onDelete}) {
+export default function DocumentRow({ doc, onDelete, onRename }) {
 
     const navigate = useNavigate();
 
@@ -20,15 +20,26 @@ export default function DocumentRow({ doc, onDelete}) {
             <span className={styles.date}>Edited {formattedDate}</span>
         </div>
 
-        <button 
-            className={styles.deleteBtn} 
-            onClick={(e)=>{
-                e.stopPropagation();
-                onDelete(doc._id);
-            }}
-        >
-            <Shredder/>
-        </button>
+        <div className={styles.actions}>
+
+            <button
+                    className={styles.actionBtn}
+                    onClick={(e) => { e.stopPropagation(); onRename(doc); }}
+                >
+                    <SquarePen size={18}/>
+                </button>
+
+            <button 
+                className={styles.deleteBtn} 
+                onClick={(e)=>{
+                    e.stopPropagation();
+                    onDelete(doc._id);
+                }}
+            >
+                <Trash2/>
+            </button>
+        </div>
+
 
     </div>
   );
