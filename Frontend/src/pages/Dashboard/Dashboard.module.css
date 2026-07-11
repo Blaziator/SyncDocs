@@ -1,6 +1,7 @@
 .dashboardPage{
     min-height: 100vh;
     background: #F5F7FB;
+    padding-bottom: 1.3rem;    
 }
 
 .content{

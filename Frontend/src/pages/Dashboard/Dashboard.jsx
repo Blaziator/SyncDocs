@@ -6,6 +6,7 @@ import Header from "../../components/Header/Header.jsx";
 import styles from "./Dashboard.module.css";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Plus } from "lucide-react";
+import NameDocumentModal from "../../components/NameDocumentModal/NameDocumentModal.jsx";
 
 export default function Dashboard() {
 
@@ -16,6 +17,9 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [modalState, setModalState] = useState({
+    isOpen: false, mode: null, docId: null, initialValue: ""
+  });
 
   useEffect(()=>{
 
@@ -51,15 +55,34 @@ export default function Dashboard() {
       greetingMsg = "Good Evening";
   }
 
-  const handleCreateDocument = async()=>{
-    try{
-      const response = await axiosInstance.post("/documents/create", {});
-      console.log(response);
-      navigate(`/doc/${response.data.newDoc._id}`);
-    }catch(err){
-      setError(err.response?.data?.message || "Failed to create document.");
+  const handleCreateClick = () => {
+    setModalState({ isOpen: true, mode: "create", docId: null, initialValue: "Untitled Document" });
+};
+
+const handleRenameClick = (doc) => {
+    setModalState({ isOpen: true, mode: "rename", docId: doc._id, initialValue: doc.title });
+};
+
+const handleModalCancel = () => {
+    setModalState({ isOpen: false, mode: null, docId: null, initialValue: "" });
+};
+
+const handleModalConfirm = async (title) => {
+    const { mode, docId } = modalState;
+    setModalState({ isOpen: false, mode: null, docId: null, initialValue: "" });
+
+    try {
+        if (mode === "create") {
+            const response = await axiosInstance.post("/documents/create", { title });
+            navigate(`/doc/${response.data.doc._id}`);
+        } else if (mode === "rename") {
+            const response = await axiosInstance.patch(`/documents/${docId}`, { title });
+            setDocs((prev) => prev.map((d) => (d._id === docId ? response.data.doc : d)));
+        }
+    } catch (err) {
+        setError(err.response?.data?.message || "Something went wrong.");
     }
-  };
+};
 
   const handleDelete = async(docId)=>{
     try{
@@ -90,7 +113,7 @@ export default function Dashboard() {
         <div className={styles.toolbar}>
           
           <h2>All Documents</h2>
-          <button className={styles.createBtn} onClick={handleCreateDocument}> <Plus size={18}/> New Document</button>
+          <button className={styles.createBtn} onClick={handleCreateClick}> <Plus size={18}/> New Document</button>
 
         </div>
 
@@ -105,12 +128,18 @@ export default function Dashboard() {
         ): (
           <div className={styles.list}>
             {filteredDocs.map((doc)=> (
-              <DocumentRow key={doc._id} doc={doc} onDelete={handleDelete}/>
+              <DocumentRow key={doc._id} doc={doc} onDelete={handleDelete} onRename={handleRenameClick}/>
             ))}
           </div>
         )}
 
       </div>
+      <NameDocumentModal
+        isOpen={modalState.isOpen}
+        initialValue={modalState.initialValue}
+        onConfirm={handleModalConfirm}
+        onCancel={handleModalCancel}
+      />
     </div>
   );
 }
