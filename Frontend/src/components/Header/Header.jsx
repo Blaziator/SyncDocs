@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import styles from "./Header.module.css";
 import {Search, LogOut} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import styles from "./Header.module.css";
 
 export default function Header({searchQuery, setSearchQuery}) {
 
@@ -37,7 +37,7 @@ export default function Header({searchQuery, setSearchQuery}) {
         <div className={styles.header}>
 
             <div className={styles.logoRow}>
-                <img src="/logo-icon.svg" alt="SyncDocs" className={styles.logoIcon} />
+                <img src="/favicon.svg" alt="SyncDocs" className={styles.logoIcon} />
                 <span className={styles.logoText}>SyncDocs</span>
             </div>
 

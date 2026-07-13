@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
   <title id="title">SyncDocs favicon</title>
-  <desc id="desc">A blue document icon with a cursor on a white rounded square background.</desc>
+  <desc id="desc">A blue document icon with a cursor on a transparent background.</desc>
   <defs>
     <linearGradient id="fileFill" x1="365" y1="190" x2="923" y2="926" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#4648f8"/>
@@ -35,8 +35,6 @@
       <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#080d1c" flood-opacity=".25"/>
     </filter>
   </defs>
-
-  <rect width="512" height="512" rx="112" fill="#ffffff"/>
 
   <g transform="translate(256 256) scale(.64) translate(-720.5 -570.5)">
     <g filter="url(#fileShadow)">

@@ -57,24 +57,24 @@ export default function Dashboard() {
 
   const handleCreateClick = () => {
     setModalState({ isOpen: true, mode: "create", docId: null, initialValue: "Untitled Document" });
-};
+  };
 
-const handleRenameClick = (doc) => {
-    setModalState({ isOpen: true, mode: "rename", docId: doc._id, initialValue: doc.title });
-};
+  const handleRenameClick = (doc) => {
+      setModalState({ isOpen: true, mode: "rename", docId: doc._id, initialValue: doc.title });
+  };
 
-const handleModalCancel = () => {
-    setModalState({ isOpen: false, mode: null, docId: null, initialValue: "" });
-};
+  const handleModalCancel = () => {
+      setModalState({ isOpen: false, mode: null, docId: null, initialValue: "" });
+  };
 
-const handleModalConfirm = async (title) => {
+  const handleModalConfirm = async (title) => {
     const { mode, docId } = modalState;
     setModalState({ isOpen: false, mode: null, docId: null, initialValue: "" });
 
     try {
         if (mode === "create") {
             const response = await axiosInstance.post("/documents/create", { title });
-            navigate(`/doc/${response.data.doc._id}`);
+            navigate(`/doc/${response.data.newDoc._id}`);
         } else if (mode === "rename") {
             const response = await axiosInstance.patch(`/documents/${docId}`, { title });
             setDocs((prev) => prev.map((d) => (d._id === docId ? response.data.doc : d)));
@@ -82,7 +82,7 @@ const handleModalConfirm = async (title) => {
     } catch (err) {
         setError(err.response?.data?.message || "Something went wrong.");
     }
-};
+  };
 
   const handleDelete = async(docId)=>{
     try{
