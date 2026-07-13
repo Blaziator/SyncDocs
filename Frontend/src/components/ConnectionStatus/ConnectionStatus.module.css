@@ -1,0 +1,16 @@
+.statusRow {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.label {
+    font-size: 0.7rem;
+    color: #6b7280;
+}
