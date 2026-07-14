@@ -31,7 +31,7 @@ export default function Register() {
     setIsSubmitting(true);
 
     try{
-      await register(name, email, password);
+      await register(name, email, password, claimDocId);
       navigate("/dashboard");
 
     }catch(err){
