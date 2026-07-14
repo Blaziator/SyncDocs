@@ -1,4 +1,5 @@
 import Document from "../models/document.js";
+import mongoose from "mongoose";
 
 export const createGuestDoc = async(req, res)=>{
     
@@ -54,6 +55,10 @@ export const getDocument = async(req, res)=>{
 
         const {docId} = req.params;
 
+        if (!mongoose.Types.ObjectId.isValid(docId)) {
+            return res.status(404).json({ message: "Document not found" });
+        }
+
         const existingDoc = await Document.findById(docId);
 
         if(!existingDoc){
@@ -84,6 +89,10 @@ export const updateDocument = async(req, res)=>{
         const {docId} = req.params;
         const {title} = req.body;
 
+        if (!mongoose.Types.ObjectId.isValid(docId)) {
+            return res.status(404).json({ message: "Document not found" });
+        }
+
         const doc = await Document.findById(docId);
 
         if(!doc){
@@ -110,6 +119,11 @@ export const claimDocument = async(req, res)=>{
 
     try{
         const {docId} = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(docId)) {
+            return res.status(404).json({ message: "Document not found" });
+        }
+
         const existingDoc = await Document.findById(docId);
 
         if(!existingDoc){
@@ -138,6 +152,10 @@ export const deleteDocument = async(req, res)=>{
 
     try{
         const {docId} = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(docId)) {
+            return res.status(404).json({ message: "Document not found" });
+        }
 
         const existingDoc = await Document.findById(docId);
 
