@@ -29,7 +29,15 @@ export default function EditorHeader({doc}) {
 
       <div className={styles.right}>
           <button className={styles.shareBtn}> <UserRoundPlus size={18}/>  Share</button>
-          {doc.owner == null && <button className={styles.claimBtn}> <UserRoundCheck size={18}/> Claim Document</button>}
+          {doc.owner == null && 
+              <button 
+                className={styles.claimBtn} 
+                title="Save your document or Claim as your own"
+                onClick={()=> navigate(`/login?claim=${doc._id}`)}
+              > 
+                <UserRoundCheck size={18}/> Claim Document
+              </button>
+          }
       </div>
 
     </div>
