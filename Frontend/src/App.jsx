@@ -27,6 +27,7 @@ function App() {
               </ProtectedRoute>
             }/>
           <Route path="/doc/:docId" element={<Editor/>}/>
+          <Route path="/shared/:shareId" element={<Editor/>}/>
           <Route path="/access-denied" element={<AccessDenied />} />
           <Route path="/not-found" element={<NotFound />} />
           <Route path="*" element={<NotFound/>} />
