@@ -1,5 +1,6 @@
 import Document from "../models/document.js";
 import mongoose from "mongoose";
+import crypto from "crypto";
 
 export const createGuestDoc = async(req, res)=>{
     
@@ -147,6 +148,107 @@ export const claimDocument = async(req, res)=>{
         res.status(500).json({message: "Server error while claiming this document"});
     }
 };
+
+export const generateShareLink = async(req, res)=>{
+
+    try{
+
+        const {docId} = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(docId)) {
+            return res.status(404).json({ message: "Document not found" });
+        }
+
+        const existingDoc = await Document.findById(docId);
+
+        if(!existingDoc){
+            return res.status(404).json({message: "Document not found or already expired"});
+        }
+
+        if (!existingDoc.owner || existingDoc.owner.toString() !== req.userId) {
+            return res.status(403).json({ message: "Only the owner can share this document" });
+        }
+
+        if(!existingDoc.shareId){
+            existingDoc.shareId = crypto.randomUUID();
+            await existingDoc.save();
+        }         
+        
+        return res.status(200).json({
+            shareId: existingDoc.shareId,
+            sharePermission: existingDoc.sharePermission
+        });
+
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message: "Server error while creating share link"});
+    }
+}
+
+export const updateSharePermission = async(req, res)=>{
+
+    try{
+
+        const {docId} = req.params;
+        const { permission } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(docId)) {
+            return res.status(404).json({ message: "Document not found" });
+        }
+
+        const existingDoc = await Document.findById(docId);
+
+        if(!existingDoc){
+            return res.status(404).json({message: "Document not found or already expired"});
+        }     
+
+        if (!existingDoc.owner || existingDoc.owner.toString() !== req.userId) {
+            return res.status(403).json({ message: "Only the owner can change sharing permissions" });
+        }
+
+        existingDoc.sharePermission = permission;
+        await existingDoc.save();
+
+         res.status(200).json({
+            message: "Share permission updated",
+            sharePermission: existingDoc.sharePermission
+        });        
+
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message: "Server error while updating share permission"});
+    }
+}
+
+export const getDocumentByShareId = async(req, res)=>{
+    try{
+
+        const {shareId} = req.params;
+        const existingDoc = await Document.findOne({ shareId });
+
+        if(!existingDoc){
+            return res.status(404).json({ message: "This share link is invalid or has expired" });
+        }
+
+        if(existingDoc.sharePermission === "edit" && req.userId){
+            const isOwner = existingDoc.owner && existingDoc.owner.toString() === req.userId;
+            const alreadyCollaborator = existingDoc.collaborators.some(
+                (c)=> c.user.toString() === req.userId
+            );
+
+            if(!isOwner && !alreadyCollaborator){
+                existingDoc.collaborators.push({user: req.userId, permission: "edit"});
+                await existingDoc.save();
+            }
+        }
+
+        res.status(200).json({existingDoc});
+
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ message: "Server error while fetching shared document" });
+    }
+}
 
 export const deleteDocument = async(req, res)=>{
 

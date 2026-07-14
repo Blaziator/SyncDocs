@@ -18,3 +18,11 @@ export const claimDocumentSchema = Joi.object({
                "string.hex": "Invalid document ID"
            })
 });
+
+export const shareIdParamSchema = Joi.object({
+    shareId: Joi.string().guid({ version: "uuidv4" }).required()
+});
+
+export const sharePermissionSchema = Joi.object({
+    permission: Joi.string().valid("view", "edit").required()
+});

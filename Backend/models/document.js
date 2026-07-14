@@ -41,6 +41,11 @@ const documentSchema = new mongoose.Schema({
         type: String,
         unique: true,
         sparse: true
+    },
+    sharePermission: {
+        type: String,
+        enum: ["view", "edit"],
+        default: "view"
     }
 }, {timestamps: true});
 
