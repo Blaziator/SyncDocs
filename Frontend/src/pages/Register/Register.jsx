@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
-import {useNavigate, Link} from "react-router-dom";
+import {useNavigate, Link, useSearchParams} from "react-router-dom";
 import styles from "./Register.module.css";
 
 
@@ -20,6 +20,10 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const claimDocId = searchParams.get("claim");
+  const loginLink = claimDocId ? `/login?claim=${claimDocId}` : "/login";
 
   const handleSubmit = async(e)=>{
     e.preventDefault();
@@ -102,7 +106,7 @@ export default function Register() {
         </form>
 
         <p className={styles.footer}>
-          Already have an account? <Link className={styles.link} to="/login">Log in</Link>
+          Already have an account? <Link className={styles.link} to={loginLink}>Log in</Link>
         </p>
 
       </div>
