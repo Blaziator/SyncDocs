@@ -1,7 +1,7 @@
 import {useEditor, EditorContent} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import axiosInstance from "../../api/axiosInstance.js";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import {Bold, Italic, Strikethrough, List, Undo2, Redo2} from "lucide-react";
 import EditorToolbar from "../../components/EditorToolbar/EditorToolbar.jsx";
@@ -16,6 +16,8 @@ import FontFamily from "@tiptap/extension-font-family";
 import styles from "./Editor.module.css";
 
 export default function Editor() {
+
+  const navigate = useNavigate();
 
   const {docId} = useParams();
   const [doc, setDoc] = useState({});
@@ -52,7 +54,7 @@ export default function Editor() {
 
   useEffect(()=>{
 
-    const getDocContent = async()=>{
+  const getDocContent = async()=>{
 
     try{
 
@@ -62,13 +64,22 @@ export default function Editor() {
       setContent(doc.content || "Hello user, start typing now...");
 
     }catch(err){
-      setError(err.response?.data?.message || "Something went wrong. Try again");
+      const status = err.response?.status;
+      console.log(status);
+
+      if (status === 403) {
+        navigate("/access-denied");
+      } else if (status === 404) {
+          navigate("/not-found");
+      } else { 
+        setError(err.response?.data?.message || "Something went wrong. Try again");
+      }
     }
   }
 
   getDocContent();
 
-  }, [docId]);
+  }, [docId, navigate]);
 
   useEffect(() => {
     if (editor) {
