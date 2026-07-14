@@ -3,11 +3,11 @@ import StarterKit from "@tiptap/starter-kit";
 import axiosInstance from "../../api/axiosInstance.js";
 import {useNavigate, useParams} from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext.jsx";
 import {Bold, Italic, Strikethrough, List, Undo2, Redo2} from "lucide-react";
 import EditorToolbar from "../../components/EditorToolbar/EditorToolbar.jsx";
 import EditorHeader from "../../components/EditorHeader/EditorHeader.jsx";
 import Heading from "@tiptap/extension-heading";
-import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import {TextStyle} from "@tiptap/extension-text-style";
@@ -18,11 +18,13 @@ import styles from "./Editor.module.css";
 export default function Editor() {
 
   const navigate = useNavigate();
+  const {docId, shareId } = useParams();
+  const {user} = useAuth();
 
-  const {docId} = useParams();
   const [doc, setDoc] = useState({});
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
+  const [canEdit, setCanEdit] = useState(true);
 
   const editor = useEditor({
     extensions: [
@@ -34,7 +36,7 @@ export default function Editor() {
         levels: [1,2,3,4,5,6]
       }),
 
-      Underline,
+      // Underline,
 
       Highlight.configure({
         multicolor: true
@@ -46,11 +48,13 @@ export default function Editor() {
 
       TextAlign.configure({
         types: ["heading", "paragraph"]
-      })
+      }),
 
   ],
     content,
+    editable: canEdit,
   });
+
 
   useEffect(()=>{
 
@@ -58,14 +62,21 @@ export default function Editor() {
 
     try{
 
-      const response = await axiosInstance.get(`/documents/${docId}`);
+      const endPoint = docId ? `/documents/${docId}`: `/documents/shared/${shareId}`;
+      const response = await axiosInstance.get(endPoint);
       const doc = response.data.existingDoc;  
       setDoc(doc);
       setContent(doc.content || "Hello user, start typing now...");
 
+      if(shareId){
+        setCanEdit(doc.sharePermission === "edit");
+      }else{
+        setCanEdit(true);
+      }
+
     }catch(err){
+      console.log(err);
       const status = err.response?.status;
-      console.log(status);
 
       if (status === 403) {
         navigate("/access-denied");
@@ -79,13 +90,19 @@ export default function Editor() {
 
   getDocContent();
 
-  }, [docId, navigate]);
+  }, [docId, shareId, navigate]);
 
   useEffect(() => {
-    if (editor) {
+    if (editor && content) {
       editor.commands.setContent(content);
     }
   }, [content, editor]);
+
+  useEffect(() => {
+    if (editor) {
+      editor.setEditable(canEdit);
+    }
+    }, [canEdit, editor]);
 
   return (
     <div className={styles.editorPage}>
@@ -97,6 +114,12 @@ export default function Editor() {
 
 
       {error && <p className={styles.error}>{error}</p>}
+
+      {!canEdit && (
+        <p className={styles.viewOnlyBanner}>
+            You're viewing this document in read-only mode.
+        </p>
+      )}  
       
       <EditorContent editor={editor} className={styles.contentDiv}/>
     </div>
