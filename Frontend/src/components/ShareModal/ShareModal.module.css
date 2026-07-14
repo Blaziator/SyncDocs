@@ -1,0 +1,118 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    width: 450px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #111827;
+}
+
+.loadingText {
+    color: #6b7280;
+    font-size: 0.9rem;
+    padding: 1rem 0;
+}
+
+.linkRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.linkIcon {
+    color: #6b7280;
+    flex-shrink: 0;
+}
+
+.linkInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.85rem;
+    color: #374151;
+    background: transparent;
+}
+
+.controls {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+}
+
+.permissionSelect {
+    flex: 1;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.copyBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #4F46E5;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.copyBtn:hover {
+    background: #eef2ff;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.doneBtn {
+    background: #4F46E5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.doneBtn:hover {
+    background: #4338CA;
+}
+
+.error {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 0.5rem;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}   
