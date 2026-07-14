@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import styles from "./Login.module.css";
 
 export default function Login() {
@@ -12,6 +12,10 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const claimDocId = searchParams.get("claim");
+  const registerLink = claimDocId ? `/register?claim=${claimDocId}` : "/register";
 
   useEffect(()=>{
     if(user){
@@ -89,7 +93,7 @@ export default function Login() {
         </form>
 
         <p className={styles.footer}>
-          New here? <Link className={styles.link} to="/register">Register</Link>
+          New here? <Link className={styles.link} to={registerLink}>Register</Link>
         </p>
 
       </div>
