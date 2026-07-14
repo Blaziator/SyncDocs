@@ -17,10 +17,11 @@ export const registerSchema = Joi.object({
         .length(24)
         .hex()
         .optional()
+        .allow(null, "")
 });
 
 export const loginSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    claimDocId: Joi.string().length(24).hex().optional()
+    claimDocId: Joi.string().length(24).hex().optional().allow(null, "")
 });
