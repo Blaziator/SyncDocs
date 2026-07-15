@@ -29,7 +29,7 @@ export const createDocument = async(req, res)=>{
             owner: req.userId
         });
 
-        res.status(201).json({newDoc});
+        res.status(201).json({doc: newDoc});
 
     }catch(err){
         console.error(err);
@@ -43,7 +43,7 @@ export const getDashboard = async(req,res)=>{
 
         const allDoc = await Document.find({owner:req.userId}).sort({ updatedAt: -1});
 
-        res.status(200).json({ allDoc });
+        res.status(200).json({ docs: allDoc });
 
     }catch(err){
         console.error(err);
@@ -75,7 +75,7 @@ export const getDocument = async(req, res)=>{
             }
         }
 
-        res.status(200).json({ existingDoc });
+        res.status(200).json({ doc: existingDoc });
 
     }catch(err){
         console.error(err);
@@ -141,7 +141,7 @@ export const claimDocument = async(req, res)=>{
 
         await existingDoc.save();
 
-        res.status(200).json({ message: "Document claimed successfully", existingDoc });
+        res.status(200).json({ message: "Document claimed successfully", doc: existingDoc });
 
     }catch(err){
         console.error(err);
@@ -231,14 +231,22 @@ export const getDocumentByShareId = async(req, res)=>{
         }
 
         const isOwner = existingDoc.owner && existingDoc.owner.toString() === req.userId;
-        const existingCollabRecord = req.userId? existingDoc.collaborators.find((c)=> c.user.toString() === req.userID): null;
 
-        if(existingDoc.sharePermission === "edit" && req.userId && !isOwner && !existingCollabRecord){
-            existingDoc.collaborators.push({user: req.userId, permission: "edit"});
-            await existingDoc.save(); 
+        if (existingDoc.sharePermission === "edit" && req.userId && !isOwner) {
+
+            await Document.updateOne(
+                {
+                    _id: existingDoc._id,
+                    "collaborators.user": { $ne: req.userId } 
+                },
+                {
+                    $push: { collaborators: { user: req.userId, permission: "edit" } }
+                }
+            );
         }
 
-        res.status(200).json({existingDoc});
+        const updatedDoc = await Document.findById(existingDoc._id);
+        res.status(200).json({doc: updatedDoc});
 
     }catch(err){
         console.error(err);
