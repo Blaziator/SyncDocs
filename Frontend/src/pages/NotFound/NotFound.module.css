@@ -9,11 +9,13 @@
 }
 
 .logoRow {
+    background: transparent;
     display: flex;
+    border: none;
     align-items: center;
     justify-content: flex-start;
     gap: 0.5rem;
-}
+} 
 
 .logoIcon {
     width: 40px;

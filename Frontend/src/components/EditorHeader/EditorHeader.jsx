@@ -2,9 +2,9 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import { UserRoundCheck, UserRoundPlus} from "lucide-react";
 import ConnectionStatus from "../ConnectionStatus/ConnectionStatus.jsx";
 import { useNavigate } from "react-router-dom";
-import styles from "./EditorHeader.module.css";
 import { useState } from "react";
 import ShareModal from "../ShareModal/ShareModal.jsx";
+import styles from "./EditorHeader.module.css";
 
 export default function EditorHeader({doc}) {
 
@@ -16,7 +16,7 @@ export default function EditorHeader({doc}) {
   return (
     <div className={styles.header}>
       <div className={styles.left}>
-        <button className={styles.brand} onClick={()=> navigate('/dashboard')}>
+        <button className={styles.brand} onClick={()=> navigate('/dashboard')} title="Go to dashboard">
           <img
             src="/favicon.svg"
             alt="SyncDocs logo"

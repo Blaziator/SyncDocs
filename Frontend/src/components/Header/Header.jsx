@@ -36,10 +36,10 @@ export default function Header({searchQuery, setSearchQuery}) {
     return (
         <div className={styles.header}>
 
-            <div className={styles.logoRow}>
+            <button className={styles.logoRow} onClick={()=> navigate('/dashboard')} title="Go to dashboard">
                 <img src="/favicon.svg" alt="SyncDocs" className={styles.logoIcon} />
                 <span className={styles.logoText}>SyncDocs</span>
-            </div>
+            </button>
 
             <div className={styles.searchContainer}>
 

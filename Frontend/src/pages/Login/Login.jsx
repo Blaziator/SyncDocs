@@ -14,7 +14,8 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [searchParams] = useSearchParams();
-  const claimDocId = searchParams.get("claim");
+  const rawClaimDocId  = searchParams.get("claim");
+  const claimDocId = rawClaimDocId && rawClaimDocId !== "undefined" ? rawClaimDocId : null;
   const registerLink = claimDocId ? `/register?claim=${claimDocId}` : "/register";
 
   useEffect(()=>{
@@ -48,7 +49,7 @@ export default function Login() {
       <div className={styles.card}>
 
         <div className={styles.logoRow}>
-          <img src="/logo-icon.svg" alt="SyncDocs" className={styles.logoIcon} />
+          <img src="/favicon.svg" alt="SyncDocs" className={styles.logoIcon} />
           <span className={styles.logoText}>SyncDocs</span>
         </div>
 

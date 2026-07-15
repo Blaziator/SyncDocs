@@ -93,6 +93,10 @@ export default function ShareModal({isOpen, docId, onClose}) {
                     </>
                 )}
 
+                <div className={styles.actions}>
+                    <button className={styles.doneBtn} onClick={onClose}>Done</button>
+                </div>
+
             </div>
         </div>
     )

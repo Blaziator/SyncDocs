@@ -8,10 +8,10 @@ export default function NotFound() {
 
   return (
     <div className={styles.page}>
-        <div className={styles.logoRow}>
+        <button className={styles.logoRow} onClick={()=> navigate("/")}>
           <img src="/favicon.svg" alt="SyncDocs" className={styles.logoIcon} />
           <span className={styles.logoText}>SyncDocs</span>
-        </div>
+        </button>
         <div className={styles.pageContent}>
           <FileQuestion size={64} className={styles.icon}/>
           <h1 className={styles.title}>404 - Page not found</h1>

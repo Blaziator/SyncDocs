@@ -10,6 +10,11 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    border: none;
+    background: transparent;
+    padding: 0.45rem 0.7rem;
+    border-radius: 9999px;
+    cursor: pointer;
 }
 
 .logoIcon {
