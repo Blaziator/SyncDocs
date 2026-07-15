@@ -23,8 +23,6 @@ export default function Landing() {
     try{
 
       const response = await axiosInstance.post("/documents/guest");
-      console.log(response);
-      console.log(response.data.docId);
       navigate(`/doc/${response.data.docId}`);
 
     }catch(err){

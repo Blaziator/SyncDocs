@@ -28,7 +28,7 @@ export default function Dashboard() {
 
       try{
         const response = await axiosInstance.get("/documents/dashboard");
-        setDocs(response.data.allDoc);
+        setDocs(response.data.docs);
   
       }catch(err){
         setError(err.response?.data?.message || "Something Went Wrong. Try again");
@@ -74,7 +74,7 @@ export default function Dashboard() {
     try {
         if (mode === "create") {
             const response = await axiosInstance.post("/documents/create", { title });
-            navigate(`/doc/${response.data.newDoc._id}`);
+            navigate(`/doc/${response.data.doc._id}`);
         } else if (mode === "rename") {
             const response = await axiosInstance.patch(`/documents/${docId}`, { title });
             setDocs((prev) => prev.map((d) => (d._id === docId ? response.data.doc : d)));

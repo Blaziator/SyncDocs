@@ -19,7 +19,7 @@ export default function Editor() {
 
   const navigate = useNavigate();
   const {docId, shareId } = useParams();
-  const {user} = useAuth();
+  const {user, loading: authLoading} = useAuth();
 
   const [doc, setDoc] = useState({});
   const [content, setContent] = useState("");
@@ -35,8 +35,6 @@ export default function Editor() {
       Heading.configure({
         levels: [1,2,3,4,5,6]
       }),
-
-      // Underline,
 
       Highlight.configure({
         multicolor: true
@@ -58,48 +56,50 @@ export default function Editor() {
 
   useEffect(()=>{
 
-  const getDocContent = async()=>{
+    if (authLoading) return;
 
-    try{
+    const getDocContent = async()=>{
 
-      const endPoint = docId ? `/documents/${docId}`: `/documents/shared/${shareId}`;
-      const response = await axiosInstance.get(endPoint);
-      const doc = response.data.existingDoc;  
-      setDoc(doc);
-      setContent(doc.content || "Hello user, start typing now...");
+      try{
 
-      if(shareId){
-        const isOwner = user && fetchedDoc.owner === user.id;
-        const collabRecord = user? fetchedDoc.collaborators.find((c) => c.user === user.id): null;
+        const endPoint = docId ? `/documents/${docId}`: `/documents/shared/${shareId}`;
+        const response = await axiosInstance.get(endPoint);
+        const doc = response.data.doc;  
+        setDoc(doc);
+        setContent(doc.content || "Hello user, start typing now...");
+        
+        if(shareId){          
+          const isOwner = user && doc.owner === user.id;
+          const collabRecord = user? doc.collaborators.find((c) => c.user === user.id): null;
 
-        if (isOwner) {
+          if (isOwner) {
+            setCanEdit(true);
+          } else if (collabRecord) {
+            setCanEdit(collabRecord.permission === "edit");
+          } else {
+            setCanEdit(doc.sharePermission === "edit");
+          }
+        }else{
           setCanEdit(true);
-        } else if (collabRecord) {
-          setCanEdit(collabRecord.permission === "edit");
-        } else {
-          setCanEdit(fetchedDoc.sharePermission === "edit");
         }
-      }else{
-        setCanEdit(true);
-      }
 
-    }catch(err){
-      console.log(err);
-      const status = err.response?.status;
+      }catch(err){
+        console.log(err);
+        const status = err.response?.status;
 
-      if (status === 403) {
-        navigate("/access-denied");
-      } else if (status === 404) {
-          navigate("/not-found");
-      } else { 
-        setError(err.response?.data?.message || "Something went wrong. Try again");
+        if (status === 403) {
+          navigate("/access-denied");
+        } else if (status === 404) {
+            navigate("/not-found");
+        } else { 
+          setError(err.response?.data?.message || "Something went wrong. Try again");
+        }
       }
     }
-  }
 
   getDocContent();
 
-  }, [docId, shareId, navigate]);
+  }, [docId, shareId, navigate, user, authLoading]);
 
   useEffect(() => {
     if (editor && content) {
