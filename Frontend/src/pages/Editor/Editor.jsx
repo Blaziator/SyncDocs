@@ -69,7 +69,16 @@ export default function Editor() {
       setContent(doc.content || "Hello user, start typing now...");
 
       if(shareId){
-        setCanEdit(doc.sharePermission === "edit");
+        const isOwner = user && fetchedDoc.owner === user.id;
+        const collabRecord = user? fetchedDoc.collaborators.find((c) => c.user === user.id): null;
+
+        if (isOwner) {
+          setCanEdit(true);
+        } else if (collabRecord) {
+          setCanEdit(collabRecord.permission === "edit");
+        } else {
+          setCanEdit(fetchedDoc.sharePermission === "edit");
+        }
       }else{
         setCanEdit(true);
       }
