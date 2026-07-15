@@ -230,16 +230,12 @@ export const getDocumentByShareId = async(req, res)=>{
             return res.status(404).json({ message: "This share link is invalid or has expired" });
         }
 
-        if(existingDoc.sharePermission === "edit" && req.userId){
-            const isOwner = existingDoc.owner && existingDoc.owner.toString() === req.userId;
-            const alreadyCollaborator = existingDoc.collaborators.some(
-                (c)=> c.user.toString() === req.userId
-            );
+        const isOwner = existingDoc.owner && existingDoc.owner.toString() === req.userId;
+        const existingCollabRecord = req.userId? existingDoc.collaborators.find((c)=> c.user.toString() === req.userID): null;
 
-            if(!isOwner && !alreadyCollaborator){
-                existingDoc.collaborators.push({user: req.userId, permission: "edit"});
-                await existingDoc.save();
-            }
+        if(existingDoc.sharePermission === "edit" && req.userId && !isOwner && !existingCollabRecord){
+            existingDoc.collaborators.push({user: req.userId, permission: "edit"});
+            await existingDoc.save(); 
         }
 
         res.status(200).json({existingDoc});
