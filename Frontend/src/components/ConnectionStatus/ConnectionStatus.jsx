@@ -1,7 +1,7 @@
 import { useAuth } from "../../context/AuthContext";
 import styles from "./ConnectionStatus.module.css";
 
-export default function ConnectionStatus({ status = "idle" }) {
+export default function ConnectionStatus({ status = "idle", isGuestDoc = false }) {
 
   const {user} = useAuth();
   
@@ -10,18 +10,14 @@ export default function ConnectionStatus({ status = "idle" }) {
     syncing: { color: "#F59E0B", label: "Syncing..." },
     disconnected: { color: "#DC2626", label: "Disconnected" },
     idle: { color: "#9CA3AF", label: "Single-user mode" },
-    login: {
-      color: "#DC2626",
-      label: "Login to save and sync document to cloud",
-    },
   };
 
-  const { color, label } = statusConfig[status];
+  const { color, label } = statusConfig[status] || statusConfig.idle;
   
-  if(!user){
+  if(!user && isGuestDoc){
     return (
       <div className={styles.statusRow}>
-        <span className={styles.dot} style={{ backgroundColor: "red" }} />
+        <span className={styles.dot} style={{ backgroundColor: "#DC2626" }} />
         <span className={styles.label}>Login to save and sync document to cloud</span>
       </div>
     )
