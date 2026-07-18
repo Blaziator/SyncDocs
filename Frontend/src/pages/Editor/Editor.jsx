@@ -85,7 +85,7 @@ export default function Editor() {
     return {id: sessionStorage.getItem("guestName") || getGuestName(), name: getGuestName()};
   }, [user]);
 
-  const {ydoc, connectionStatus, hasSynced, cursorColor} = useYjsProvider(
+  const {ydoc, undoManager, connectionStatus, hasSynced, cursorColor} = useYjsProvider(
     docLoaded? syncId: null,
     userInfo
   );
@@ -117,7 +117,10 @@ export default function Editor() {
         types: ["heading", "paragraph"]
       }),
 
-      Collaboration.configure({document: ydoc}),
+      Collaboration.configure({
+        document: ydoc,
+        undoManager: undoManager,
+      }),
 
       // CollaborationCursor.configure({
       //   provider: {awareness: ydoc.awareness},
