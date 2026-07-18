@@ -18,9 +18,15 @@ export default function useYjsProvider(docIdentifier, userInfo){
     const [hasSynced, setHasSynced] = useState(false);
     const ydocRef = useRef(null);
     const socketRef = useRef(null);
+    const undoManagerRef = useRef(null);
 
     if(!ydocRef.current){
         ydocRef.current = new Y.Doc();
+    }
+
+    if(!undoManagerRef.current){
+        const xmlFragment = ydocRef.current.get("default", Y.XmlFragment);
+        undoManagerRef.current = new Y.UndoManager(xmlFragment);
     }
 
     useEffect(()=>{
@@ -63,8 +69,10 @@ export default function useYjsProvider(docIdentifier, userInfo){
         return ()=>{
             ydoc.off("update", handleLocalUpdate);
             socket.disconnect();
+            undoManagerRef.current.destroy();
             ydoc.destroy();
             ydocRef.current = null;
+            undoManagerRef.current = null;
         };
 
     }, [docIdentifier]);
@@ -72,6 +80,7 @@ export default function useYjsProvider(docIdentifier, userInfo){
     return{
         ydoc: ydocRef.current,
         socket: socketRef.current,
+        undoManager: undoManagerRef.current,
         connectionStatus,
         hasSynced,
         cursorColor: userInfo? getColorForUser(userInfo.id): "#9CA3AF",
