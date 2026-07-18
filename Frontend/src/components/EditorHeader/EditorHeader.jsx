@@ -6,7 +6,7 @@ import { useState } from "react";
 import ShareModal from "../ShareModal/ShareModal.jsx";
 import styles from "./EditorHeader.module.css";
 
-export default function EditorHeader({doc}) {
+export default function EditorHeader({doc, connectionStatus}) {
 
   const {user} = useAuth();
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export default function EditorHeader({doc}) {
 
       <div className={styles.center}>
         <p className={styles.title}>{doc.title}</p>
-        <ConnectionStatus status="idle" />
+        <ConnectionStatus status={connectionStatus} isGuestDoc={doc.isGuest}/>
       </div>
 
       <div className={styles.right}>
