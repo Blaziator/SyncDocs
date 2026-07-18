@@ -34,6 +34,16 @@
     border-radius: 6px;
 }
 
+.statusText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    color: #6b7280;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
 :global(.ProseMirror) {
     outline: none;
     border: none;
@@ -53,4 +63,12 @@
     max-width: 816px;
     margin: 1rem auto 0;
     border-radius: 6px;
+}
+
+:global(.ProseMirror p.is-editor-empty:first-child::before) {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
