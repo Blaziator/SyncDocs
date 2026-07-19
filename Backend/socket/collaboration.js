@@ -1,6 +1,9 @@
 import {Server} from "socket.io";
 import * as Y from "yjs";
 import {loadYjsState, saveYjsState} from "../utils/yjsPersistence.js"
+import Document from "../models/document.js";
+import {resolveEditPermission} from "../utils/permission.js";
+import {attachUserToSocket} from "./socketAuth.js";
 
 const activeDocuments = new Map();
 const SAVE_DEBOUNCE_MS = 2000;
@@ -16,6 +19,8 @@ export function setupCollaboration(httpServer) {
 
     io.on("connection", (socket)=>{
 
+        attachUserToSocket(socket);
+
         console.log("Client connected id: ", socket.id);
 
         let currDocId = null
@@ -24,10 +29,17 @@ export function setupCollaboration(httpServer) {
             currDocId = docId;
             socket.join(docId);
 
+            const doc = await Document.findById(docId);
+            if(!doc){
+                socket.emit("error-messsage", "Document not found");
+                return;
+            }
+
+            socket.canEdit = resolveEditPermission(doc, socket.userId);
+
             if(!activeDocuments.has(docId)){
                 const ydoc = await loadYjsState(docId);
                 activeDocuments.set(docId, {ydoc, saveTimeout: null});
-                console.log(`Loaded document ${docId} into memory`);
             }
 
             const {ydoc} = activeDocuments.get(docId);
@@ -35,10 +47,15 @@ export function setupCollaboration(httpServer) {
             const fullState = Y.encodeStateAsUpdate(ydoc);
             socket.emit("yjs-sync", fullState);
 
-            console.log(`Socket ${socket.id} joined room ${docId}`);
+            console.log(`Socket ${socket.id} joined room ${docId}, canEdit: ${socket.canEdit}`);
         });
 
         socket.on("yjs-update", (docId, update)=>{
+
+            if(docId !== currDocId || !socket.canEdit){
+                return;
+            }
+
             const entry = activeDocuments.get(docId);
             if(!entry) return;
 
