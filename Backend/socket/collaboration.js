@@ -4,6 +4,7 @@ import {loadYjsState, saveYjsState} from "../utils/yjsPersistence.js"
 import Document from "../models/document.js";
 import {resolveEditPermission} from "../utils/permission.js";
 import {attachUserToSocket} from "./socketAuth.js";
+import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate, removeAwarenessStates } from "y-protocols/awareness.js";
 
 const activeDocuments = new Map();
 const SAVE_DEBOUNCE_MS = 2000;
@@ -21,12 +22,11 @@ export function setupCollaboration(httpServer) {
 
         attachUserToSocket(socket);
 
-        console.log("Client connected id: ", socket.id);
-
         let currDocId = null
 
-        socket.on("join-document", async(docId)=>{
+        socket.on("join-document", async(docId,awarenessClientId)=>{
             currDocId = docId;
+            socket.awarenessClientId = awarenessClientId;
             socket.join(docId);
 
             const doc = await Document.findById(docId);
@@ -39,7 +39,16 @@ export function setupCollaboration(httpServer) {
 
             if(!activeDocuments.has(docId)){
                 const ydoc = await loadYjsState(docId);
-                activeDocuments.set(docId, {ydoc, saveTimeout: null});
+                const docAwareness = new Awareness(ydoc);
+
+                docAwareness.on("update", ({added, updated, removed}, origin)=>{
+                    if(origin !== "server") return;
+                    const changedClients = added.concat(updated, removed);
+                    const update = encodeAwarenessUpdate(docAwareness, changedClients);
+                    io.to(docId).emit("awareness-update", update);
+                });
+
+                activeDocuments.set(docId, {ydoc, awareness: docAwareness, saveTimeout: null, dirty: false});
             }
 
             const {ydoc} = activeDocuments.get(docId);
@@ -47,7 +56,6 @@ export function setupCollaboration(httpServer) {
             const fullState = Y.encodeStateAsUpdate(ydoc);
             socket.emit("yjs-sync", fullState);
 
-            console.log(`Socket ${socket.id} joined room ${docId}, canEdit: ${socket.canEdit}`);
         });
 
         socket.on("yjs-update", (docId, update)=>{
@@ -60,36 +68,43 @@ export function setupCollaboration(httpServer) {
             if(!entry) return;
 
             Y.applyUpdate(entry.ydoc, new Uint8Array(update));
-
+            entry.dirty = true;
             socket.to(docId).emit("yjs-update", update);
 
             clearTimeout(entry.saveTimeout);
             entry.saveTimeout = setTimeout(async()=>{
                 await saveYjsState(docId, entry.ydoc);
-                console.log(`Persisted document ${docId} to MongoDB`);
             }, SAVE_DEBOUNCE_MS);
         });
 
         socket.on("awareness-update", (docId, update) => {
+            const entry = activeDocuments.get(docId);
+            if (entry) {
+                applyAwarenessUpdate(entry.awareness, new Uint8Array(update), "remote-client");
+            }
             socket.to(docId).emit("awareness-update", update);
         });
         
         socket.on("disconnect", async()=>{
-            console.log("Client disconnected:", socket.id);
 
             if (!currDocId) return;
+
+            const entry = activeDocuments.get(currDocId);
+
+            if (entry && socket.awarenessClientId != null) {
+                removeAwarenessStates(entry.awareness, [socket.awarenessClientId], "server");
+            }
 
             const room = io.sockets.adapter.rooms.get(currDocId);
             const remainingClients = room? room.size : 0;
 
-            if(remainingClients === 0){
-                const entry = activeDocuments.get(currDocId);
-                if(entry){
-                    clearTimeout(entry.saveTimeout);
+            if(remainingClients === 0 && entry){
+            
+                clearTimeout(entry.saveTimeout);
+                if (entry.dirty) {
                     await saveYjsState(currDocId, entry.ydoc);
-                    activeDocuments.delete(currDocId);
-                    console.log(`Last client left ${currDocId}, saved and cleaned up`);
                 }
+                activeDocuments.delete(currDocId);            
             }
         });
     });
