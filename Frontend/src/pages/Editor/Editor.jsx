@@ -50,8 +50,8 @@ export default function Editor() {
         setDoc(fetchedDoc);
         
         if(shareId){
-          const isOwner = user && fetchedDoc.owner === user.id;
-          const collabRecord = user? fetchedDoc.collaborators.find((c)=> c.user === user.id): null;
+          const isOwner = user && fetchedDoc.owner?._id === user.id;
+          const collabRecord = user? fetchedDoc.collaborators.find((c)=> c.user._id === user.id): null;
 
           if(isOwner){
             setCanEdit(true);
@@ -85,7 +85,7 @@ export default function Editor() {
     return {id: sessionStorage.getItem("guestName") || getGuestName(), name: getGuestName()};
   }, [user]);
 
-  const {ydoc, awareness, undoManager, connectionStatus, hasSynced, cursorColor} = useYjsProvider(
+  const {ydoc, awareness, undoManager, connectionStatus, hasSynced, syncError, cursorColor} = useYjsProvider(
     docLoaded? syncId: null,
     userInfo
   );
@@ -145,6 +145,7 @@ export default function Editor() {
       </div>
 
       {error && <p className={styles.error}>{error}</p>}
+      {syncError && <p className={styles.error}>{syncError}</p>}
 
       {!canEdit && (
         <p className={styles.viewOnlyBanner}>
