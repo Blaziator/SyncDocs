@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import styles from "./ShareModal.module.css";
+import { createPortal } from "react-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { Link2, Check } from "lucide-react";
+import styles from "./ShareModal.module.css";
 
 export default function ShareModal({isOpen, docId, onClose}) {
   
@@ -35,6 +36,16 @@ export default function ShareModal({isOpen, docId, onClose}) {
 
     }, [isOpen, docId]);
 
+    useEffect(() => {
+        if (!isOpen) return;
+
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [isOpen]);
+
     if(!isOpen) return null;
 
     const shareUrl = `${window.location.origin}/shared/${shareId}`;
@@ -59,7 +70,7 @@ export default function ShareModal({isOpen, docId, onClose}) {
         setTimeout(()=> setCopied(false), 2000);
     };
   
-    return (
+    return createPortal(
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={(e)=> e.stopPropagation()}>
                 <h3 className={styles.title}>Share this document</h3>
@@ -98,6 +109,7 @@ export default function ShareModal({isOpen, docId, onClose}) {
                 </div>
 
             </div>
-        </div>
+        </div>,
+        document.body
     )
 }

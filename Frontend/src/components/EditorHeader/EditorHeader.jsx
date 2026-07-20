@@ -49,7 +49,7 @@ export default function EditorHeader({doc, connectionStatus}) {
       <div className={styles.right}>
         {docLoaded && (
           <>
-            {user && doc.owner?._id === user.id && (
+            {user && doc.owner === user.id && (
               <button
                   className={styles.shareBtn}
                   onClick={() => setIsShareOpen(true)}
