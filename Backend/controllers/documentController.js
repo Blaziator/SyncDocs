@@ -41,7 +41,12 @@ export const getDashboard = async(req,res)=>{
 
     try{
 
-        const allDoc = await Document.find({owner:req.userId}).sort({ updatedAt: -1});
+        const allDoc = await Document.find({
+            $or: [
+                {owner: req.userId},
+                {"collaborators.user": req.userId}
+            ]
+        }).sort({ updatedAt: -1}).populate("owner", "name");
 
         res.status(200).json({ docs: allDoc });
 
