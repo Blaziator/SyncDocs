@@ -50,8 +50,8 @@ export default function Editor() {
         setDoc(fetchedDoc);
         
         if(shareId){
-          const isOwner = user && fetchedDoc.owner?._id === user.id;
-          const collabRecord = user? fetchedDoc.collaborators.find((c)=> c.user._id === user.id): null;
+          const isOwner = user && fetchedDoc.owner === user.id;
+          const collabRecord = user? fetchedDoc.collaborators.find((c)=> c.user === user.id): null;
 
           if(isOwner){
             setCanEdit(true);
