@@ -4,6 +4,7 @@ import ConnectionStatus from "../ConnectionStatus/ConnectionStatus.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ShareModal from "../ShareModal/ShareModal.jsx";
+import axiosInstance from "../../api/axiosInstance.js";
 import styles from "./EditorHeader.module.css";
 
 export default function EditorHeader({doc, connectionStatus}) {
@@ -12,6 +13,20 @@ export default function EditorHeader({doc, connectionStatus}) {
   const navigate = useNavigate();
   const [isShareOpen, setIsShareOpen] = useState(false);
   const docLoaded = Boolean(doc._id);
+
+  const handleClaim = async()=>{
+
+    if(user){
+      try{
+        await axiosInstance.post("/documents/claim", {docId: doc._id});
+        navigate("/dashboard");     
+      }catch(err){
+        console.error(err);
+      }
+    }else{
+      navigate(`/login?claim=${doc._id}`);
+    }
+  }
 
   return (
     <div className={styles.header}>
@@ -34,7 +49,7 @@ export default function EditorHeader({doc, connectionStatus}) {
       <div className={styles.right}>
         {docLoaded && (
           <>
-            {user && doc.owner === user.id && (
+            {user && doc.owner?._id === user.id && (
               <button
                   className={styles.shareBtn}
                   onClick={() => setIsShareOpen(true)}
@@ -47,7 +62,7 @@ export default function EditorHeader({doc, connectionStatus}) {
                 <button 
                   className={styles.claimBtn} 
                   title="Save your document or Claim as your own"
-                  onClick={()=> navigate(`/login?claim=${doc._id}`)}
+                  onClick={handleClaim}
                 > 
                   <UserRoundCheck size={18}/> Claim Document
                 </button>
