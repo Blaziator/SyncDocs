@@ -77,3 +77,21 @@
 .separator {
     color: #9ca3af;
 }
+
+.shareBtn{
+    border: none;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    color: black;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.shareBtn:hover {
+    background: #f3f4f6;
+}
