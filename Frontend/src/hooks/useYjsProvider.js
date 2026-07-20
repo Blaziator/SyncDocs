@@ -17,6 +17,7 @@ function getColorForUser(id){
 export default function useYjsProvider(docIdentifier, userInfo){
     const [connectionStatus, setConnectionStatus] = useState("disconnected");
     const [hasSynced, setHasSynced] = useState(false);
+    const [syncError, setSyncError] = useState("");
     const ydocRef = useRef(null);
     const socketRef = useRef(null);
     const undoManagerRef = useRef(null);
@@ -51,7 +52,8 @@ export default function useYjsProvider(docIdentifier, userInfo){
         const awareness = awarenessRef.current;
 
         socket.on("connect", ()=>{
-            socket.emit("join-document", docIdentifier);
+
+            socket.emit("join-document", docIdentifier, awareness.clientID);
 
             if(userInfo){
                 awareness.setLocalStateField("user", {
@@ -75,7 +77,12 @@ export default function useYjsProvider(docIdentifier, userInfo){
             applyAwarenessUpdate(awareness, new Uint8Array(update), "remote");
         });
 
-        socket.on("disconnect", ()=>{
+        socket.on("error-message", (message) => {
+            setSyncError(message);
+        });
+
+        socket.on("disconnect", (reason)=>{
+            console.log("Disconnected:", socket.id, reason);
             setConnectionStatus("disconnected");
         });
 
@@ -116,6 +123,7 @@ export default function useYjsProvider(docIdentifier, userInfo){
         undoManager: undoManagerRef.current,
         connectionStatus,
         hasSynced,
+        syncError,
         cursorColor: userInfo? getColorForUser(userInfo.id): "#9CA3AF",
     };    
 }
