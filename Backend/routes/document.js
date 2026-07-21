@@ -4,11 +4,14 @@ import {createGuestDoc, createDocument, getDashboard, getDocument, updateDocumen
 import authMiddleware from "../middleware/auth.js";
 import optionalAuth from "../middleware/optionalAuth.js";
 import validate from "../middleware/validate.js";
+import { guestDocLimiter, generalLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
+router.use(generalLimiter);
+
 router.get("/dashboard", authMiddleware, getDashboard);
-router.post("/guest", createGuestDoc);
+router.post("/guest", guestDocLimiter, createGuestDoc);
 router.post("/create", authMiddleware, validate(createDocumentSchema), createDocument);
 router.patch("/:docId", authMiddleware, validate(createDocumentSchema), updateDocument)
 router.post("/claim", authMiddleware, validate(claimDocumentSchema), claimDocument);
