@@ -1,290 +1,221 @@
 import Document from "../models/document.js";
 import mongoose from "mongoose";
 import crypto from "crypto";
+import { asyncWrapper } from "../utils/asyncWrapper.js";
+import { AppError } from "../utils/AppError.js";
 
-export const createGuestDoc = async(req, res)=>{
+export const createGuestDoc = asyncWrapper(async(req, res)=>{
+    const newDoc = await Document.create({
+        isGuest: true,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    });
+
+    res.status(201).json({ docId: newDoc._id});
+});
+
+export const createDocument = asyncWrapper(async(req, res)=>{
+    const {title} = req.body;
+    const newDoc = await Document.create({
+        title,
+        owner: req.userId
+    });
+
+    res.status(201).json({doc: newDoc});
+});
+
+export const getDashboard = asyncWrapper(async(req,res)=>{
+    const allDoc = await Document.find({
+        $or: [
+            {owner: req.userId},
+            {"collaborators.user": req.userId}
+        ]
+    }).sort({ updatedAt: -1}).populate("owner", "name");
+
+    res.status(200).json({ docs: allDoc });
+});
+
+export const getDocument = asyncWrapper(async(req, res)=>{
+
+    const {docId} = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+        throw new AppError("Document not found", 404);
+    }
+
+    const existingDoc = await Document.findById(docId);
+
+    if(!existingDoc){
+        throw new AppError("Document not found", 404);
+    }
+
+    if(existingDoc.owner && (!req.userId || existingDoc.owner.toString() !== req.userId)){
+        const isCollaborator = existingDoc.collaborators.some(
+            (c)=> c.user.toString() === req.userId
+        );
+        if(!isCollaborator){
+            throw new AppError("You don't have access to this document", 403);
+        }
+    }
+
+    res.status(200).json({ doc: existingDoc });
+});
+
+export const updateDocument = asyncWrapper(async(req, res)=>{
+
+    const {docId} = req.params;
+    const {title} = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+        throw new AppError("Document not found", 404);
+    }
+
+    const doc = await Document.findById(docId);
+
+    if(!doc){
+        throw new AppError("Document not found", 404);
+    }
+
+    if(!doc.owner || doc.owner.toString() !== req.userId){
+        throw new AppError("Only the owner can rename this document", 403);
+    }
+
+    doc.title = title;
+    await doc.save();
+
+    res.status(200).json({doc});
+});
+
+export const claimDocument = asyncWrapper(async(req, res)=>{
+
+    const {docId} = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+        throw new AppError("Document not found", 404);
+    }
+
+    const existingDoc = await Document.findById(docId);
+
+    if(!existingDoc){
+        throw new AppError("Document not found or already expired", 404);
+    }
+
+    if(!existingDoc.isGuest){
+        throw new AppError("Document already has an owner", 400);
+    }
+
+    existingDoc.owner = req.userId;
+    existingDoc.isGuest = false;
+    existingDoc.expiresAt= null;
+
+    await existingDoc.save();
+
+    res.status(200).json({ message: "Document claimed successfully", doc: existingDoc });
+});
+
+export const generateShareLink = asyncWrapper(async(req, res)=>{
+
+    const {docId} = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+        throw new AppError("Document not found", 404);
+    }
+
+    const existingDoc = await Document.findById(docId);
+
+    if(!existingDoc){
+        throw new AppError("Document not found or already expired", 404);
+    }
+
+    if (!existingDoc.owner || existingDoc.owner.toString() !== req.userId) {
+        throw new AppError("Only the owner can share this document", 403);
+    }
+
+    if(!existingDoc.shareId){
+        existingDoc.shareId = crypto.randomUUID();
+        await existingDoc.save();
+    }         
     
-    try{
-        const newDoc = await Document.create({
-            isGuest: true,
-            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
-        });
+    return res.status(200).json({
+        shareId: existingDoc.shareId,
+        sharePermission: existingDoc.sharePermission
+    });
+});
 
-        res.status(201).json({ docId: newDoc._id});
+export const updateSharePermission = asyncWrapper(async(req, res)=>{
 
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while creating guest document"});
+    const {docId} = req.params;
+    const { permission } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+        throw new AppError("Document not found", 404);
     }
-};
 
-export const createDocument = async(req, res)=>{
+    const existingDoc = await Document.findById(docId);
 
-    try{
+    if(!existingDoc){
+        throw new AppError("Document not found or already expired", 404);
+    }     
 
-        const {title} = req.body;
-
-        const newDoc = await Document.create({
-            title,
-            owner: req.userId
-        });
-
-        res.status(201).json({doc: newDoc});
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while creating new document"});
+    if (!existingDoc.owner || existingDoc.owner.toString() !== req.userId) {
+        throw new AppError("Only the owner can change sharing permissions", 403);
     }
-};
 
-export const getDashboard = async(req,res)=>{
+    existingDoc.sharePermission = permission;
+    await existingDoc.save();
 
-    try{
+        res.status(200).json({
+        message: "Share permission updated",
+        sharePermission: existingDoc.sharePermission
+    });        
+});
 
-        const allDoc = await Document.find({
-            $or: [
-                {owner: req.userId},
-                {"collaborators.user": req.userId}
-            ]
-        }).sort({ updatedAt: -1}).populate("owner", "name");
+export const getDocumentByShareId = asyncWrapper(async(req, res)=>{
 
-        res.status(200).json({ docs: allDoc });
+    const {shareId} = req.params;
+    const existingDoc = await Document.findOne({ shareId });
 
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while loading dashboard"});
+    if(!existingDoc){
+        throw new AppError("Document not found or already expired", 404);
     }
-};
 
-export const getDocument = async(req, res)=>{
-    try{
+    const isOwner = existingDoc.owner && existingDoc.owner.toString() === req.userId;
 
-        const {docId} = req.params;
+    if (existingDoc.sharePermission === "edit" && req.userId && !isOwner) {
 
-        if (!mongoose.Types.ObjectId.isValid(docId)) {
-            return res.status(404).json({ message: "Document not found" });
-        }
-
-        const existingDoc = await Document.findById(docId);
-
-        if(!existingDoc){
-            return res.status(404).json({message: "Document not found"});
-        }
-
-        if(existingDoc.owner && (!req.userId || existingDoc.owner.toString() !== req.userId)){
-            const isCollaborator = existingDoc.collaborators.some(
-                (c)=> c.user.toString() === req.userId
-            );
-            if(!isCollaborator){
-                return res.status(403).json({message: "You don't have access to this document"});
+        await Document.updateOne(
+            {
+                _id: existingDoc._id,
+                "collaborators.user": { $ne: req.userId } 
+            },
+            {
+                $push: { collaborators: { user: req.userId, permission: "edit" } }
             }
-        }
-
-        res.status(200).json({ doc: existingDoc });
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while fetching document"});
-    }
-};
-
-export const updateDocument = async(req, res)=>{
-
-    try{
-
-        const {docId} = req.params;
-        const {title} = req.body;
-
-        if (!mongoose.Types.ObjectId.isValid(docId)) {
-            return res.status(404).json({ message: "Document not found" });
-        }
-
-        const doc = await Document.findById(docId);
-
-        if(!doc){
-            return res.status(404).json({message: "Document not found"});
-        }
-
-        if(!doc.owner || doc.owner.toString() !== req.userId){
-            return res.status(403).json({ message: "Only the owner can rename this document" });
-        }
-
-        doc.title = title;
-        await doc.save();
-
-        res.status(200).json({doc});
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({ message: "Server error while updating document" });
+        );
     }
 
-}
+    const updatedDoc = await Document.findById(existingDoc._id);
+    res.status(200).json({doc: updatedDoc});
+});
 
-export const claimDocument = async(req, res)=>{
+export const deleteDocument = asyncWrapper(async(req, res)=>{
 
-    try{
-        const {docId} = req.body;
+    const {docId} = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(docId)) {
-            return res.status(404).json({ message: "Document not found" });
-        }
-
-        const existingDoc = await Document.findById(docId);
-
-        if(!existingDoc){
-            return res.status(404).json({message: "Document not found or already expired"});
-        }
-
-        if(!existingDoc.isGuest){
-            return res.status(400).json({ message: "Document already has an owner" });
-        }
-
-        existingDoc.owner = req.userId;
-        existingDoc.isGuest = false;
-        existingDoc.expiresAt= null;
-
-        await existingDoc.save();
-
-        res.status(200).json({ message: "Document claimed successfully", doc: existingDoc });
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while claiming this document"});
-    }
-};
-
-export const generateShareLink = async(req, res)=>{
-
-    try{
-
-        const {docId} = req.params;
-
-        if (!mongoose.Types.ObjectId.isValid(docId)) {
-            return res.status(404).json({ message: "Document not found" });
-        }
-
-        const existingDoc = await Document.findById(docId);
-
-        if(!existingDoc){
-            return res.status(404).json({message: "Document not found or already expired"});
-        }
-
-        if (!existingDoc.owner || existingDoc.owner.toString() !== req.userId) {
-            return res.status(403).json({ message: "Only the owner can share this document" });
-        }
-
-        if(!existingDoc.shareId){
-            existingDoc.shareId = crypto.randomUUID();
-            await existingDoc.save();
-        }         
-        
-        return res.status(200).json({
-            shareId: existingDoc.shareId,
-            sharePermission: existingDoc.sharePermission
-        });
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while creating share link"});
-    }
-}
-
-export const updateSharePermission = async(req, res)=>{
-
-    try{
-
-        const {docId} = req.params;
-        const { permission } = req.body;
-
-        if (!mongoose.Types.ObjectId.isValid(docId)) {
-            return res.status(404).json({ message: "Document not found" });
-        }
-
-        const existingDoc = await Document.findById(docId);
-
-        if(!existingDoc){
-            return res.status(404).json({message: "Document not found or already expired"});
-        }     
-
-        if (!existingDoc.owner || existingDoc.owner.toString() !== req.userId) {
-            return res.status(403).json({ message: "Only the owner can change sharing permissions" });
-        }
-
-        existingDoc.sharePermission = permission;
-        await existingDoc.save();
-
-         res.status(200).json({
-            message: "Share permission updated",
-            sharePermission: existingDoc.sharePermission
-        });        
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while updating share permission"});
-    }
-}
-
-export const getDocumentByShareId = async(req, res)=>{
-    try{
-
-        const {shareId} = req.params;
-        const existingDoc = await Document.findOne({ shareId });
-
-        if(!existingDoc){
-            return res.status(404).json({ message: "This share link is invalid or has expired" });
-        }
-
-        const isOwner = existingDoc.owner && existingDoc.owner.toString() === req.userId;
-
-        if (existingDoc.sharePermission === "edit" && req.userId && !isOwner) {
-
-            await Document.updateOne(
-                {
-                    _id: existingDoc._id,
-                    "collaborators.user": { $ne: req.userId } 
-                },
-                {
-                    $push: { collaborators: { user: req.userId, permission: "edit" } }
-                }
-            );
-        }
-
-        const updatedDoc = await Document.findById(existingDoc._id);
-        res.status(200).json({doc: updatedDoc});
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({ message: "Server error while fetching shared document" });
-    }
-}
-
-export const deleteDocument = async(req, res)=>{
-
-    try{
-        const {docId} = req.params;
-
-        if (!mongoose.Types.ObjectId.isValid(docId)) {
-            return res.status(404).json({ message: "Document not found" });
-        }
-
-        const existingDoc = await Document.findById(docId);
-
-        if(!existingDoc){
-            return res.status(404).json({message: "Document not found or expired"});
-        }
-
-        if(!existingDoc.owner || existingDoc.owner.toString() !== req.userId){
-            return res.status(403).json({ message: "Only the owner can delete this document" });
-        }
-
-        await Document.findByIdAndDelete(docId);
-
-        res.status(200).json({ message: "Document deleted successfully" });
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: "Server error while deleting document"});
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+        throw new AppError("Document not found", 404);
     }
 
-};
+    const existingDoc = await Document.findById(docId);
+
+    if(!existingDoc){
+        throw new AppError("Document not found or expired", 404);
+    }
+
+    if(!existingDoc.owner || existingDoc.owner.toString() !== req.userId){
+        throw new AppError("Only the owner can delete this document", 403);
+    }
+
+    await Document.findByIdAndDelete(docId);
+
+    res.status(200).json({ message: "Document deleted successfully" });
+});
