@@ -7,6 +7,12 @@ const consoleFormat = printf(({ level, message, timestamp, ...meta }) => {
     return `[${timestamp}] ${level}: ${typeof message === "object" ? JSON.stringify(message) : message}${metaStr}`;
 });
 
+const fileFormat = combine(
+    timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    errors({ stack: true }),
+    json()
+);
+
 const logger = winston.createLogger({
     level: process.env.NODE_ENV === "production"? "info": "debug",
     format: combine(
@@ -21,8 +27,8 @@ const logger = winston.createLogger({
 });
 
 if(process.env.NODE_ENV !== "production"){
-    logger.add(new winston.transports.File({ filename: "logs/error.log", level: "error" }));
-    logger.add(new winston.transports.File({ filename: "logs/combined.log" }));
+    logger.add(new winston.transports.File({ filename: "logs/combined.log", format: fileFormat }));
+    logger.add(new winston.transports.File({ filename: "logs/error.log", level: "error", format: fileFormat }));
 }
 
 export default logger;
