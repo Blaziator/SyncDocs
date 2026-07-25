@@ -1,0 +1,30 @@
+Connection Scale Benchmark — baseline
+    Generated: 26/7/2026, 12:23:33 am
+
+    Document Pool Size: 20
+    peak_concurrent_connections....: 1370
+    total_join_attempts............: 1900
+    join_success....................: 1900
+    join_failures....................: 0
+    success_rate.....................: 100.00%
+    unexpected_disconnects...........: 0
+
+    join_latency_avg.................: 55.52ms
+    join_latency_p50.................: 54.00ms
+    join_latency_p95.................: 69.00ms
+    join_latency_max.................: 395.00ms
+
+    total_yjs_updates_sent...........: 15200
+    total_awareness_updates_sent.....: 9500
+
+    memory_before_rss.................: 63.40 MB
+    memory_after_rss...................: 162.09 MB
+
+    total_duration....................: 189.07s
+
+    Per-Phase Breakdown:
+      Warm up        : joined=100, failed=0
+  Normal load    : joined=300, failed=0
+  Heavy load     : joined=600, failed=0
+  Stress test    : joined=900, failed=0
+    
