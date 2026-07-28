@@ -1,5 +1,7 @@
 frontend/node_modules
 backend/node_modules
 backend/.env
+backend/.env.instance2
 frontend/.env
+frontend/.env.instance2
 backend/logs/
