@@ -1,5 +1,5 @@
 import Redis from "ioredis";
-import logger from "./utils/logger.js";
+import logger from "../utils/logger.js";
 
 const useRedis = process.env.USE_REDIS === "true";
 
@@ -7,7 +7,7 @@ let publisher = null;
 let subscriber = null;
 
 if (useRedis) {
-    logger.warn("Redis enabled");
+    logger.info("Redis enabled");
 
     publisher = new Redis(process.env.REDIS_URL);
     subscriber = new Redis(process.env.REDIS_URL);
@@ -28,7 +28,7 @@ if (useRedis) {
         logger.error("Redis subscriber error", err)
     );
 } else {
-    logger.warn("Redis disabled");
+    logger.info("Redis disabled");
 }
 
 export { publisher, subscriber, useRedis};
