@@ -1,0 +1,20 @@
+     ✓ status is 201
+     ✓ response has docId
+
+     checks.........................: 100.00% ✓ 3504      ✗ 0   
+     data_received..................: 669 kB  9.4 kB/s
+     data_sent......................: 191 kB  2.7 kB/s
+     http_req_blocked...............: avg=48.04µs  min=0s      med=0s      max=12.14ms p(90)=0s       p(95)=0s      
+     http_req_connecting............: avg=32.33µs  min=0s      med=0s      max=2.46ms  p(90)=0s       p(95)=0s      
+     http_req_duration..............: avg=41.78ms  min=31.87ms med=41.44ms max=70.38ms p(90)=45.09ms  p(95)=47.11ms 
+       { expected_response:true }...: avg=41.78ms  min=31.87ms med=41.44ms max=70.38ms p(90)=45.09ms  p(95)=47.11ms 
+     http_req_failed................: 0.00%   ✓ 0         ✗ 1752
+     http_req_receiving.............: avg=172.28µs min=0s      med=0s      max=2.48ms  p(90)=632.85µs p(95)=700.23µs
+     http_req_sending...............: avg=16.64µs  min=0s      med=0s      max=946.9µs p(90)=0s       p(95)=0s      
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s      max=0s      p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=41.59ms  min=31.87ms med=41.23ms max=70.38ms p(90)=44.93ms  p(95)=46.8ms  
+     http_reqs......................: 1752    24.689009/s
+     iteration_duration.............: avg=1.04s    min=1.03s   med=1.04s   max=1.07s   p(90)=1.04s    p(95)=1.04s   
+     iterations.....................: 1752    24.689009/s
+     vus............................: 4       min=1       max=50
+     vus_max........................: 50      min=50      max=50
