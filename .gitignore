@@ -5,3 +5,4 @@ backend/.env.instance2
 frontend/.env
 frontend/.env.instance2
 backend/logs/
+docker/.env
