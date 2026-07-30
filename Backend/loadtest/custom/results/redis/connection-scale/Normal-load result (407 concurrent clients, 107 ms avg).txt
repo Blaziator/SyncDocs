@@ -1,0 +1,30 @@
+Connection Scale Benchmark — redis
+    Generated: 30/7/2026, 7:23:09 am
+
+    Document Pool Size: 20
+    peak_concurrent_connections....: 407
+    total_join_attempts............: 580
+    join_success....................: 580
+    join_failures....................: 0
+    success_rate.....................: 100.00%
+    unexpected_disconnects...........: 0
+
+    join_latency_avg.................: 106.70ms
+    join_latency_p50.................: 101.50ms
+    join_latency_p95.................: 161.00ms
+    join_latency_max.................: 246.00ms
+
+    total_yjs_updates_sent...........: 4640
+    total_awareness_updates_sent.....: 2900
+
+    memory_before_rss.................: 52.18 MB
+    memory_after_rss...................: 68.25 MB
+
+    total_duration....................: 182.18s
+
+    Per-Phase Breakdown:
+      Warm up        : joined=40, failed=0
+  Normal load    : joined=120, failed=0
+  Heavy load     : joined=180, failed=0
+  Stress test    : joined=240, failed=0
+    
