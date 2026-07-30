@@ -1,0 +1,30 @@
+Connection Scale Benchmark — docker
+    Generated: 30/7/2026, 4:52:04 am
+
+    Document Pool Size: 20
+    peak_concurrent_connections....: 1333
+    total_join_attempts............: 1900
+    join_success....................: 1900
+    join_failures....................: 0
+    success_rate.....................: 100.00%
+    unexpected_disconnects...........: 0
+
+    join_latency_avg.................: 250.78ms
+    join_latency_p50.................: 106.00ms
+    join_latency_p95.................: 871.00ms
+    join_latency_max.................: 2472.00ms
+
+    total_yjs_updates_sent...........: 15200
+    total_awareness_updates_sent.....: 9500
+
+    memory_before_rss.................: 51.71 MB
+    memory_after_rss...................: 156.11 MB
+
+    total_duration....................: 192.06s
+
+    Per-Phase Breakdown:
+      Warm up        : joined=100, failed=0
+  Normal load    : joined=300, failed=0
+  Heavy load     : joined=600, failed=0
+  Stress test    : joined=900, failed=0
+    
