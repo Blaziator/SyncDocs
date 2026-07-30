@@ -240,7 +240,7 @@ function ensureDir(dir) {
 }
 
 function writeReport(state, memoryBefore, memoryAfter, durationMs) {
-    const resultsDir = path.join(__dirname, "results", STAGE, "connection-scale");
+    const resultsDir = path.join(__dirname,"..", "results", STAGE, "connection-scale");
     ensureDir(resultsDir);
 
     const timestamp = getTimestamp();
