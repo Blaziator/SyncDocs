@@ -1,0 +1,29 @@
+Connection Scale Benchmark — baseline
+    Generated: 24/7/2026, 10:40:19 pm
+
+    peak_concurrent_connections....: 526
+    total_join_attempts............: 1900
+    join_success....................: 972
+    join_failures....................: 928
+    success_rate.....................: 51.16%
+    unexpected_disconnects...........: 680
+
+    join_latency_avg.................: 2419.05ms
+    join_latency_p50.................: 176.00ms
+    join_latency_p95.................: 9562.00ms
+    join_latency_max.................: 16387.00ms
+
+    total_yjs_updates_sent...........: 7776
+    total_awareness_updates_sent.....: 0
+
+    memory_before_rss.................: 64.68 MB
+    memory_after_rss...................: 867.94 MB
+
+    total_duration....................: 175.39s
+
+    Per-Phase Breakdown:
+      Warm up        : joined=100, failed=0
+  Normal load    : joined=300, failed=0
+  Heavy load     : joined=404, failed=196
+  Stress test    : joined=168, failed=732
+    
