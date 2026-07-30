@@ -32,8 +32,8 @@ export function handleSummary(data) {
     .replace(/\..+/, '')   
     .replace(/[:]/g, '');
 
-  const stage = "baseline/rate-limit";
-  const basePath = `results/${stage}/report-${timestamp}`;
+  const environment = __ENV.ENVIRONMENT || "baseline";
+  const basePath = `results/${environment}/rate-limit/report-${timestamp}`;
 
   return {
     [`${basePath}.html`]: htmlReport(data),
