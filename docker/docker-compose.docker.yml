@@ -1,0 +1,28 @@
+services:
+
+  backend:
+
+    build:
+      context: ../Backend
+
+    container_name: syncdocs-backend
+
+    environment:
+      PORT: 8080
+
+      NODE_ENV: production
+
+      CLIENT_URL: ${CLIENT_URL}
+
+      MONGODB_URI: ${MONGODB_URI}
+
+      JWT_SECRET: ${JWT_SECRET}
+
+      REDIS_URL: ${REDIS_URL}
+
+      USE_REDIS: "false"
+
+      DISABLE_RATE_LIMIT: "true"
+
+    ports:
+      - "8080:8080"
