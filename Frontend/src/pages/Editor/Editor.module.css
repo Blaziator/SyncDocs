@@ -96,3 +96,41 @@
     border-radius: 4px;
     white-space: nowrap;
 }
+
+@media (max-width: 900px) {
+  .contentDiv,
+  .error,
+  .viewOnlyBanner {
+    width: calc(100% - 2rem);
+    max-width: none;
+  }
+
+  .contentDiv {
+    min-height: calc(100vh - 14rem);
+    margin: 1rem auto;
+    padding: 1.25rem;
+  }
+
+  :global(.ProseMirror) {
+    min-height: calc(100vh - 20rem);
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contentDiv {
+    width: calc(100% - 1rem);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .error,
+  .viewOnlyBanner {
+    width: calc(100% - 1rem);
+  }
+
+  :global(.ProseMirror) {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}

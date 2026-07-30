@@ -53,8 +53,11 @@ export default function EditorHeader({doc, connectionStatus}) {
               <button
                   className={styles.shareBtn}
                   onClick={() => setIsShareOpen(true)}
+                  aria-label="Share document"
+                  title="Share document"
               >
-                  <UserRoundPlus size={18} /> Share
+                  <UserRoundPlus size={18} /> 
+                  <span className={styles.shareLabel}>Share</span>
               </button>
             )}
 

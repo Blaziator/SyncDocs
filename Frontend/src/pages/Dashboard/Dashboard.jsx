@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance.js";
 import DocumentRow from "../../components/DocumentRow/DocumentRow.jsx";
 import Header from "../../components/Header/Header.jsx";
-import styles from "./Dashboard.module.css";
+import NameDocumentModal from "../../components/NameDocumentModal/NameDocumentModal.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Plus } from "lucide-react";
-import NameDocumentModal from "../../components/NameDocumentModal/NameDocumentModal.jsx";
+import styles from "./Dashboard.module.css";
 
 export default function Dashboard() {
 
@@ -113,7 +113,7 @@ export default function Dashboard() {
         <div className={styles.toolbar}>
           
           <h2>All Documents</h2>
-          <button className={styles.createBtn} onClick={handleCreateClick}> <Plus size={18}/> New Document</button>
+          <button className={styles.createBtn} onClick={handleCreateClick} aria-label="Create new document" title="Create new document"> <Plus size={18}/><span className={styles.createBtnLabel}>New Document</span></button>
 
         </div>
 

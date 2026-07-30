@@ -2,8 +2,8 @@ import axiosInstance from "../../api/axiosInstance.js";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import {ArrowRight} from "lucide-react";
-import styles from "./Landing.module.css";
 import { useEffect, useState } from "react";
+import styles from "./Landing.module.css";
 
 export default function Landing() {
 
@@ -57,7 +57,7 @@ export default function Landing() {
 
           <p className={styles.subtitle}>Real-time collaborative documents for teams that move fast and think together.</p>
 
-          <button className={styles.ctaBtn} onClick={handleGuestStart}>Start Writing <ArrowRight size={18}/></button>
+          <button className={styles.ctaBtn} onClick={handleGuestStart}>Start Writing<ArrowRight size={18}/></button>
 
         </div>
 

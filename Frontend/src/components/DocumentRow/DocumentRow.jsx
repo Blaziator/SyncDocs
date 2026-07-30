@@ -25,7 +25,10 @@ export default function DocumentRow({ doc, onDelete, onRename }) {
     <div className={styles.row} onClick={handleRowClick}>
 
         <div className={styles.info}>
-            <span className={styles.title}> <FileText size={22} color="blue"/> {doc.title}</span>
+            <span className={styles.title}> 
+                <FileText className={styles.fileIcon} size={22} color="blue"/> 
+                <span className={styles.titleText}>{doc.title}</span>
+            </span>
             
             <div className={styles.meta}>
                 {isShared && (

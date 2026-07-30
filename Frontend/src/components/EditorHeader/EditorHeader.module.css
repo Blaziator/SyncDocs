@@ -100,3 +100,60 @@
 .claimBtn:hover {
     background: #eef2ff;
 }
+
+@media (max-width: 640px) {
+    .header {
+        grid-template-columns: 40px minmax(0, 1fr) 40px;
+        gap: 0.5rem;
+        padding: 0.65rem 1rem;
+    }
+
+    .left {
+        grid-column: 1;
+    }
+
+    .brand {
+        padding: 0;
+    }
+
+    .brand h2 {
+        display: none;
+    }
+
+    .logoImg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .center {
+        grid-column: 2;
+        min-width: 0;
+        align-items: center;
+    }
+
+    .title {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .right {
+        grid-column: 3;
+        gap: 0;
+    }
+
+    .shareBtn {
+        width: 40px;
+        height: 40px;
+        justify-content: center;
+        padding: 0;
+        border-radius: 10px;
+    }
+
+    .shareLabel {
+        display: none;
+    }
+}

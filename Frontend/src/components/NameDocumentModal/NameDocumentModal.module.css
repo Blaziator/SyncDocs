@@ -12,7 +12,7 @@
     background: white;
     border-radius: 16px;
     padding: 1.5rem;
-    width: 360px;
+    width: min(360px, calc(100vw - 2rem));
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
 }
 
@@ -68,4 +68,23 @@
 
 .confirmBtn:hover {
     background: #4338CA;
+}
+
+@media (max-width: 480px) {
+    .overlay {
+        padding: 1rem;
+    }
+
+    .modal {
+        padding: 1.25rem;
+    }
+
+    .actions {
+        flex-direction: column-reverse;
+    }
+
+    .cancelBtn,
+    .confirmBtn {
+        width: 100%;
+    }
 }

@@ -71,11 +71,11 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 6.2rem 3rem;
-    gap: 3rem;
 }
 
 .bodyContent{
     max-width: 560px;
+    z-index: 2;
 }
 
 .title {
@@ -91,7 +91,7 @@
 }
 
 .subtitle {
-    font-size: 1.05rem;
+    font-size: clamp(1rem, 2vw, 1.1rem);
     color: rgba(255, 255, 255, 0.75);
     line-height: 1.6;
     margin-bottom: 2rem;
@@ -126,4 +126,98 @@
     max-width: 500px;
     margin: 0 auto;
     border-radius: 6px;
+}
+
+@media (max-width: 640px) {
+    .landing {
+        min-height: 100svh;
+        overflow-x: hidden;
+
+        background-image:
+            linear-gradient(
+                90deg,
+                rgba(2, 3, 24, 1) 0%,
+                rgba(2, 3, 24, 0.95) 48%,
+                rgba(2, 3, 24, 0.48) 100%
+            ),
+            url("/landing.png");
+
+        background-size:
+            100% 100%,
+            auto 100%;
+
+        background-position:
+            center,
+            right bottom;
+
+        background-repeat: no-repeat;
+    }
+
+    .header {
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .logo {
+        width: 42px;
+        height: 42px;
+    }
+
+    .logoContainer h2 {
+        font-size: 1.15rem;
+    }
+
+    .navBtns {
+        gap: 0.4rem;
+    }
+
+    .navBtns .btnOutline:first-child {
+        display: none;
+    }
+
+    .btnOutline,
+    .btnFilled {
+        margin: 0;
+        padding: 0.55rem 0.7rem;
+        font-size: 0.95rem;
+    }
+
+    .body {
+        display: flex;
+        align-items: center;
+        min-height: calc(100svh - 130px);
+        max-width: none;
+        padding: 1.5rem 1.5rem 2rem;
+    }
+
+    .bodyContent {
+        width: 100%;
+        max-width: 31rem;
+    }
+
+    .title {
+        font-size: clamp(2.55rem, 14vw, 3.4rem);
+        line-height: 1.1;
+        margin-bottom: 2rem;
+    }
+
+    .subtitle {
+        max-width: 24rem;
+        font-size: 1.1rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .ctaBtn {
+        padding: 0.85rem 1.35rem;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1080px) {
+
+
+    .body {
+        min-height: calc(100vh - 96px);
+        padding: 3rem 2rem;
+    }
+
 }

@@ -87,3 +87,35 @@
     color:#6B7280;
     line-height:1.6;
 }
+
+@media (max-width: 640px) {
+    .greeting {
+    padding: 1.25rem 1rem 0;
+  }
+  
+  .content {
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .toolbar {
+    gap: 0.75rem;
+  }
+
+  .greeting h1,.toolbar h2 {
+    font-size: 1.35rem;
+  }
+
+  .createBtn {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    padding: 0;
+    border-radius: 10px;
+  }
+
+  .createBtnLabel {
+    display: none;
+  }
+}

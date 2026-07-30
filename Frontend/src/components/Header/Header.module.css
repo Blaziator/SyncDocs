@@ -193,3 +193,34 @@
     border-color: #4F46E5;
     background-color: #fbfcfd;
 }
+
+@media (max-width: 640px) {
+  .header {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+  }
+
+  .logoRow {
+    flex-shrink: 0;
+    padding: 0.3rem;
+  }
+
+  .logoText {
+    display: none;
+  }
+
+  .searchContainer {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .searchInput {
+    width: 100%;
+    padding: 0.7rem 0.75rem 0.7rem 2.3rem;
+  }
+
+  .userSection {
+    flex-shrink: 0;
+  }
+}
