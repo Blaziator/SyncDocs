@@ -1,0 +1,30 @@
+Connection Scale Benchmark — nginx
+    Generated: 30/7/2026, 9:04:47 am
+
+    Document Pool Size: 20
+    peak_concurrent_connections....: 1207
+    total_join_attempts............: 1900
+    join_success....................: 1900
+    join_failures....................: 0
+    success_rate.....................: 100.00%
+    unexpected_disconnects...........: 0
+
+    join_latency_avg.................: 3089.10ms
+    join_latency_p50.................: 145.00ms
+    join_latency_p95.................: 13404.00ms
+    join_latency_max.................: 14583.00ms
+
+    total_yjs_updates_sent...........: 15200
+    total_awareness_updates_sent.....: 9500
+
+    memory_before_rss.................: 53.97 MB
+    memory_after_rss...................: 153.60 MB
+
+    total_duration....................: 197.57s
+
+    Per-Phase Breakdown:
+      Warm up        : joined=100, failed=0
+  Normal load    : joined=300, failed=0
+  Heavy load     : joined=600, failed=0
+  Stress test    : joined=900, failed=0
+    
