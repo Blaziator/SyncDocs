@@ -1,0 +1,20 @@
+     ✓ status is 201 or 429
+     ✓ request beyond limit correctly rejected with 429
+
+     checks.........................: 100.00% ✓ 30       ✗ 0  
+     data_received..................: 12 kB   2.0 kB/s
+     data_sent......................: 2.7 kB  457 B/s
+     http_req_blocked...............: avg=347.28µs min=0s       med=0s       max=8.68ms   p(90)=0s       p(95)=0s      
+     http_req_connecting............: avg=0s       min=0s       med=0s       max=0s       p(90)=0s       p(95)=0s      
+     http_req_duration..............: avg=37.65ms  min=1.73ms   med=40.29ms  max=90.12ms  p(90)=48.84ms  p(95)=60.03ms 
+       { expected_response:true }...: avg=45.56ms  min=37.79ms  med=41.26ms  max=90.12ms  p(90)=50.25ms  p(95)=64.19ms 
+     http_req_failed................: 20.00%  ✓ 5        ✗ 20 
+     http_req_receiving.............: avg=98.09µs  min=0s       med=0s       max=693.3µs  p(90)=538.54µs p(95)=660.53µs
+     http_req_sending...............: avg=0s       min=0s       med=0s       max=0s       p(90)=0s       p(95)=0s      
+     http_req_tls_handshaking.......: avg=0s       min=0s       med=0s       max=0s       p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=37.55ms  min=1.73ms   med=40.29ms  max=90.12ms  p(90)=48.62ms  p(95)=60.02ms 
+     http_reqs......................: 25      4.188041/s
+     iteration_duration.............: avg=238.77ms min=202.31ms med=240.88ms max=299.29ms p(90)=249.39ms p(95)=260.68ms
+     iterations.....................: 25      4.188041/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1

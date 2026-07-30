@@ -1,0 +1,23 @@
+     ✓ login succeeded
+     ✓ create succeeded
+     ✓ rename succeeded
+     ✓ dashboard succeeded
+     ✓ delete succeeded
+
+     checks.........................: 100.00% ✓ 990       ✗ 0   
+     data_received..................: 768 kB  11 kB/s
+     data_sent......................: 406 kB  5.6 kB/s
+     http_req_blocked...............: avg=21.29µs min=0s      med=0s      max=10.99ms  p(90)=0s       p(95)=0s      
+     http_req_connecting............: avg=9.94µs  min=0s      med=0s      max=1.28ms   p(90)=0s       p(95)=0s      
+     http_req_duration..............: avg=82.76ms min=34.65ms med=79.64ms max=241.25ms p(90)=122.87ms p(95)=129.03ms
+       { expected_response:true }...: avg=82.76ms min=34.65ms med=79.64ms max=241.25ms p(90)=122.87ms p(95)=129.03ms
+     http_req_failed................: 0.00%   ✓ 0         ✗ 1188
+     http_req_receiving.............: avg=97.61µs min=0s      med=0s      max=1.59ms   p(90)=528.52µs p(95)=609.78µs
+     http_req_sending...............: avg=8.01µs  min=0s      med=0s      max=1.13ms   p(90)=0s       p(95)=0s      
+     http_req_tls_handshaking.......: avg=0s      min=0s      med=0s      max=0s       p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=82.66ms min=34.65ms med=79.57ms max=241.25ms p(90)=122.87ms p(95)=129.01ms
+     http_reqs......................: 1188    16.490061/s
+     iteration_duration.............: avg=4s      min=3.95s   med=3.99s   max=4.12s    p(90)=4.04s    p(95)=4.06s   
+     iterations.....................: 198     2.748343/s
+     vus............................: 1       min=1       max=20
+     vus_max........................: 20      min=20      max=20
