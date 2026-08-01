@@ -64,10 +64,11 @@ export default function EditorHeader({doc, connectionStatus}) {
             {doc.owner == null && 
                 <button 
                   className={styles.claimBtn} 
-                  title="Save your document or Claim as your own"
+                  title="Save your document to your account"
+                  aria-label="Claim document"
                   onClick={handleClaim}
                 > 
-                  <UserRoundCheck size={18}/> Claim Document
+                  <UserRoundCheck size={18}/> <span className={styles.claimLabel}>Claim Document</span>
                 </button>
             }
           </>
