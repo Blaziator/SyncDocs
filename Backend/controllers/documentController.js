@@ -81,6 +81,7 @@ export const updateDocument = asyncWrapper(async(req, res)=>{
 
     doc.title = title;
     await doc.save();
+    await doc.populate("owner", "name");
 
     res.status(200).json({doc});
 });
