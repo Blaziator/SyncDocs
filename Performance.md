@@ -53,7 +53,9 @@ The following architecture was used to evaluate the multi-instance deployment co
 Nginx distributes incoming HTTP and WebSocket traffic across two backend instances, while Redis Pub/Sub synchronizes Socket.IO events between backend instances.
 MongoDB Atlas provides persistent storage shared by both backend instances.
 
-![Multi-Instance Deployment Architecture](assets/multi-instance-architecture.png)
+<p align="center">
+  <img src="assets/multi-instance-architecture.png" alt="Multi-instance deployment architecture" width="900" />
+</p>
 *Figure 3.1. Multi-instance deployment architecture using Nginx, Redis Pub/Sub, two Node.js backend instances and MongoDB Atlas.*
 
 ---
@@ -104,7 +106,9 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 | redis | 104.80 ms | 137.32 ms | 23.55 | 0.00% |
 | nginx | 136.84 ms | 192.48 ms | 22.88 | 0.00% |
 
-![Auth Latency](assets/auth-latency.png)
+<p align="center">
+  <img src="assets/auth-latency.png" alt="Authentication latency across deployment stages" width="780" />
+</p>
 *Figure 5.1 Authentication latency across deployment stages.*
 
 **Interpretation:** Latency stays within a tight band across all four stages, with nginx showing the expected ~20-25% increase from the additional reverse-proxy hop. No failures in any environment. Authentication is not a bottleneck at any stage.
@@ -118,7 +122,9 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 | redis | 83.55 ms | 131.27 ms | 16.38 | 0.00% |
 | nginx | 94.53 ms | 162.77 ms | 16.01 | 0.00% |
 
-![CRUD Latency](assets/crud-latency.png)
+<p align="center">
+  <img src="assets/crud-latency.png" alt="CRUD latency across deployment stages" width="780" />
+</p>
 *Figure 5.2. CRUD operation latency across deployment stages.*
 
 **Interpretation:** Same pattern as authentication: there is a modest, consistent overhead from containerization and proxying, with no failures and essentially unchanged throughput. CRUD operations scale cleanly through every infrastructure layer.
@@ -132,7 +138,9 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 | redis | 42.53 ms | 47.90 ms | 24.74 | 0.00% |
 | nginx | 41.64 ms | 47.31 ms | 24.71 | 0.00% |
 
-![Guest Latency](assets/guest-latency.png)
+<p align="center">
+  <img src="assets/guest-latency.png" alt="Guest latency across deployment stages" width="780" />
+</p>
 *Figure 5.3. Guest access latency across deployment stages.*
 
 **Interpretation:** Guest access shows the largest *relative* jump from baseline to docker (~18%), but absolute latency remains low (under 45ms) at every stage. There is no meaningful difference between docker, redis, and nginx because the containerization step accounts for nearly all of the added cost here, not redis or nginx specifically.
@@ -147,6 +155,9 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 | nginx | 41.21 ms | 59.50 ms | 4.12 | 20.00% |
 
 ![Rate Limit Latency](assets/rate-limit.png)
+<p align="center">
+  <img src="assets/rate-limit.png" alt="Rate-limited request latency across deployment stages" width="780" />
+</p>
 *Figure 5.4. Rate-limited request latency across deployment stages.*
 
 **Interpretation:** The 20% failure rate is expected, not a defect, because it reflects the rate limiter correctly rejecting requests once a client exceeds the configured threshold. That this figure holds at exactly 20% across all four environments confirms the limiter's behavior is deterministic and unaffected by the surrounding infrastructure.
@@ -180,19 +191,27 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 | redis | 1,032.53 ms | 70.13 ms | 45.80 MB |
 | nginx | 1,018.91 ms | 53.23 ms | 45.91 MB |
 
-![Join Latency](assets/collaboration-join.png)
+<p align="center">
+  <img src="assets/collaboration-join.png" alt="Collaboration join latency by client count and deployment stage" width="780" />
+</p>
 *Figure 5.5a. Collaboration join latency by client count and deployment stage.*
 
-![Propagation Latency](assets/collaboration-propagation.png)
+<p align="center">
+  <img src="assets/collaboration-propagation.png" alt="Update propagation latency by client count and deployment stage" width="780" />
+</p>
 *Figure 5.5b. Update propagation latency by client count and deployment stage.*
 
-![Collaboration Throughput](assets/collaboration-throughput.png)
+<p align="center">
+  <img src="assets/collaboration-throughput.png" alt="Update throughput by client count and deployment stage" width="780" />
+</p>
 *Figure 5.5c. Update throughput by client count and deployment stage.*
 
-![Memory Growth](assets/memory-growth.png)
+<p align="center">
+  <img src="assets/memory-growth.png" alt="RSS memory delta by client count and deployment stage" width="780" />
+</p>
 *Figure 5.5d. RSS memory delta by client count and deployment stage.*
 
-**Interpretation:** Two separate effects are visible here. First, RSS delta scales with client count almost identically across all four environments (~46MB at 100 clients regardless of stage); that scaling is a property of the application process itself rather than the surrounding infrastructure. Second, update propagation latency at a fixed client count grows significantly once redis/nginx are introduced (8.58ms → 53-70ms at 100 clients) because each update traverses additional communication layers (Socket.IO Redis adapter and/or Nginx reverse proxy) before reaching every subscribed client.
+**Interpretation:** Two separate effects are visible here. First, RSS delta scales with client count almost identically across all four environments (~46MB at 100 clients regardless of stage); that scaling is a property of the application process itself rather than the surrounding infrastructure. Second, update propagation latency at a fixed client count grows significantly once redis/nginx are introduced (8.58ms → 53-70ms at 100 clients) because each update traverses additional communication layers (Redis Pub/Sub and/or Nginx reverse proxy) before reaching every subscribed client.
 
 ### 5.6 Connection Scale
 
@@ -203,15 +222,19 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 | redis | 3,674.62 ms | 14,935.40 ms | 1,178 | 100% |
 | nginx | 3,109.01 ms | 13,477.00 ms | 1,212 | 100% |
 
-![Connection Scale Join Latency](assets/connection-scale-join-latency.png)
+<p align="center">
+  <img src="assets/connection-scale-join-latency.png" alt="Connection join latency at scale across deployment stages" width="780" />
+</p>
 *Figure 5.6a. Connection join latency at scale across deployment stages.*
 
-![Peak Connections](assets/peak-connections.png)
+<p align="center">
+  <img src="assets/peak-connections.png" alt="Peak concurrent connections handled across deployment stages" width="780" />
+</p>
 *Figure 5.6b. Peak concurrent connections handled across deployment stages.*
 
-**Interpretation:** This is the most significant result in the evaluation. Avg join latency increases roughly 55-65x from baseline to redis/nginx, and P95 increases roughly 175-195x, while success rate holds at 100% throughout; connections are not failing; instead, they are queueing. Peak concurrent connections handled also declines slightly at each stage, consistent with connections taking longer to resolve and therefore backing up under the same load profile.
+**Interpretation:** This is the most significant result in the evaluation. Avg join latency increases roughly 55-65x from baseline to redis/nginx, and P95 increases roughly 175-195x, while success rate holds at 100% throughout; connections are not failing; instead, they are queueing. Peak concurrent connections remain below the baseline in the scaled configurations, with some variation between Redis and Nginx.
 
-*Note: these results reflect the revised, multi-document benchmark configuration described in Section 6. The far more severe failures observed during initial testing (see Section 6.1–6.3) were traced to a benchmark design flaw, not to the infrastructure itself, and were resolved before these figures were collected.*
+*Note: these results reflect the revised, multi-document benchmark configuration described in Section 6. The far more severe failures observed during initial testing (see Section 6.1–6.3) were traced to an unrealistic single-document stress-test workload, not to the infrastructure itself, and were resolved before these figures were collected.*
 
 ---
 
@@ -266,9 +289,11 @@ This distinguishes the connection-scale/merge-latency findings above from a leak
 
 ## 8. Redis Discussion
 
-Redis did not reduce request latency because it was not introduced as a cache. Instead, Redis was integrated using the Socket.IO Redis adapter to enable cross-instance event propagation; its purpose is horizontal scaling across multiple app instances rather than speeding up any single request. The purpose of Redis in this architecture is horizontal scalability rather than single-node performance. Therefore, a modest increase in latency is an acceptable trade-off for enabling multiple Socket.IO instances to synchronize state correctly.
+Redis did not reduce request latency because it was not introduced as a cache. Instead, it is used through Redis Pub/Sub to enable cross-instance event propagation; its purpose is horizontal scaling across multiple app instances rather than speeding up any single request.
 
-The measured latency increase in Sections 5.5 and 5.6 therefore represents the communication overhead introduced by the adapter in a multi-instance architecture, rather than a degradation of HTTP request processing. The HTTP benchmarks (5.1-5.4) confirm this directly: latency there stays essentially flat between docker and redis, because those endpoints never touch the Redis adapter. The cost is isolated to the real-time layer, where it is expected to appear because any pub/sub-based fan-out mechanism adds a hop between "client sends update" and "every other client receives it."
+The measured latency increase in Sections 5.5 and 5.6 therefore represents Pub/Sub communication overhead in a multi-instance architecture, rather than a degradation of HTTP request processing. The HTTP benchmarks (5.1–5.4) confirm this directly: latency remains essentially flat between Docker and Redis because those endpoints do not publish or subscribe to real-time collaboration events.
+
+The cost is isolated to the real-time layer, where it is expected: a pub/sub fan-out mechanism adds a hop between a client sending an update and other connected clients receiving it.
 
 ---
 
@@ -292,6 +317,6 @@ The real-time collaboration layer told a different story, and required deeper in
 
 Even after that fix, connection-scale join latency increased by roughly 55-65x moving from baseline to Redis/Nginx, and merge-latency update propagation increased 5-8x at 100 concurrent clients over the same range. Diagnostic breakdown testing performed in the baseline environment (Section 6.3) showed that the largest contribution came from the document synchronization (Yjs) and awareness broadcast path. While equivalent diagnostics were not repeated for the Docker, Redis, and Nginx environments, their behavior is consistent with the additional communication overhead introduced by those infrastructure layers. Raw WebSocket connection handling alone remained fast and reliable (100% success, ~56 ms) even at high concurrency, while adding Yjs sync and awareness traffic to the same workload dropped success rates and drove memory usage up substantially.
 
-Redis and Nginx did not create the underlying bottleneck; instead, they amplified the communication overhead already present in the collaborative synchronization pipeline. Redis's Socket.IO adapter and Nginx's reverse-proxy hop each add a real, measurable communication cost to an already latency-heavy broadcast path, which is why the worst absolute numbers appear at those two stages. The memory investigation in Section 7 confirms this cost is bounded and reproducible rather than a runaway leak, meaning the system is stable under load, but slower than it should be once document-sync and awareness traffic scale up.
+Redis and Nginx did not create the underlying bottleneck; instead, they amplified the communication overhead already present in the collaborative synchronization pipeline. Redis Pub/Sub and Nginx's reverse-proxy hop each add a real, measurable communication cost to an already latency-heavy broadcast path, which is why the worst absolute numbers appear at those two stages. The memory investigation in Section 7 confirms this cost is bounded and reproducible rather than a runaway leak, meaning the system is stable under load, but slower than it should be once document-sync and awareness traffic scale up.
 
 The evaluation demonstrates that while production-oriented infrastructure (Docker, Redis, and Nginx) introduces measurable communication overhead, it also enables capabilities such as containerized deployment, horizontal scaling, and multi-instance synchronization that cannot be achieved in the baseline architecture. The benchmark results therefore highlight the trade-off between raw latency and production readiness.
