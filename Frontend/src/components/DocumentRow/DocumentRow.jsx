@@ -45,32 +45,37 @@ export default function DocumentRow({ doc, onDelete, onRename }) {
 
         <div className={styles.actions}>
 
-            <button
-                    className={styles.actionBtn}
-                    onClick={(e) => { e.stopPropagation(); onRename(doc); }}
-                >
-                    <SquarePen size={18}/>
-            </button>
+            
 
             {!isShared && 
+                <>
 
-              <button
-                  className={styles.shareBtn}
-                  onClick={(e) => {e.stopPropagation(); setIsShareOpen(true)}}
-              >
-                  <Share2 size={18} />
-              </button>
+                    <button
+                        className={styles.actionBtn}
+                        onClick={(e) => { e.stopPropagation(); onRename(doc); }}
+                    >
+                        <SquarePen size={18}/>
+                    </button>
+
+                    <button
+                    className={styles.shareBtn}
+                    onClick={(e) => {e.stopPropagation(); setIsShareOpen(true)}}
+                    >
+                    <Share2 size={18} />
+                    </button>
+
+                    <button 
+                        className={styles.deleteBtn} 
+                        onClick={(e)=>{
+                            e.stopPropagation();
+                            onDelete(doc._id);
+                        }}
+                    >
+                        <Trash2/>
+                    </button>
+                </>
             }
-
-            <button 
-                className={styles.deleteBtn} 
-                onClick={(e)=>{
-                    e.stopPropagation();
-                    onDelete(doc._id);
-                }}
-            >
-                <Trash2/>
-            </button>
+            
         </div>
 
         <ShareModal
