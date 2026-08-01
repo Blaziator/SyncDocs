@@ -94,7 +94,7 @@ export default function Editor() {
     extensions: [
       StarterKit.configure({
         heading: false,
-        history: false,
+        undoRedo: false,
       }),
 
       Placeholder.configure({
