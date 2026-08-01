@@ -56,7 +56,9 @@ MongoDB Atlas provides persistent storage shared by both backend instances.
 <p align="center">
   <img src="assets/multi-instance-architecture.png" alt="Multi-instance deployment architecture" width="900" />
 </p>
-*Figure 3.1. Multi-instance deployment architecture using Nginx, Redis Pub/Sub, two Node.js backend instances and MongoDB Atlas.*
+<p align="center">
+  Figure 3.1. Multi-instance deployment architecture using Nginx, Redis Pub/Sub, two Node.js backend instances and MongoDB Atlas.
+</p>
 
 ---
 
@@ -109,7 +111,9 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 <p align="center">
   <img src="assets/auth-latency.png" alt="Authentication latency across deployment stages" width="780" />
 </p>
-*Figure 5.1 Authentication latency across deployment stages.*
+<p align="center">
+  Figure 5.1 Authentication latency across deployment stages.
+</p>
 
 **Interpretation:** Latency stays within a tight band across all four stages, with nginx showing the expected ~20-25% increase from the additional reverse-proxy hop. No failures in any environment. Authentication is not a bottleneck at any stage.
 
@@ -125,7 +129,9 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 <p align="center">
   <img src="assets/crud-latency.png" alt="CRUD latency across deployment stages" width="780" />
 </p>
-*Figure 5.2. CRUD operation latency across deployment stages.*
+<p align="center">
+  Figure 5.2. CRUD operation latency across deployment stages.
+</p>
 
 **Interpretation:** Same pattern as authentication: there is a modest, consistent overhead from containerization and proxying, with no failures and essentially unchanged throughput. CRUD operations scale cleanly through every infrastructure layer.
 
@@ -141,7 +147,9 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 <p align="center">
   <img src="assets/guest-latency.png" alt="Guest latency across deployment stages" width="780" />
 </p>
-*Figure 5.3. Guest access latency across deployment stages.*
+<p align="center">
+  Figure 5.3. Guest access latency across deployment stages.
+</p>
 
 **Interpretation:** Guest access shows the largest *relative* jump from baseline to docker (~18%), but absolute latency remains low (under 45ms) at every stage. There is no meaningful difference between docker, redis, and nginx because the containerization step accounts for nearly all of the added cost here, not redis or nginx specifically.
 
@@ -154,11 +162,12 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 | redis | 39.14 ms | 56.51 ms | 4.16 | 20.00% |
 | nginx | 41.21 ms | 59.50 ms | 4.12 | 20.00% |
 
-![Rate Limit Latency](assets/rate-limit.png)
 <p align="center">
   <img src="assets/rate-limit.png" alt="Rate-limited request latency across deployment stages" width="780" />
 </p>
-*Figure 5.4. Rate-limited request latency across deployment stages.*
+<p align="center">
+  Figure 5.4. Rate-limited request latency across deployment stages.
+</p>
 
 **Interpretation:** The 20% failure rate is expected, not a defect, because it reflects the rate limiter correctly rejecting requests once a client exceeds the configured threshold. That this figure holds at exactly 20% across all four environments confirms the limiter's behavior is deterministic and unaffected by the surrounding infrastructure.
 
@@ -194,22 +203,30 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 <p align="center">
   <img src="assets/collaboration-join.png" alt="Collaboration join latency by client count and deployment stage" width="780" />
 </p>
-*Figure 5.5a. Collaboration join latency by client count and deployment stage.*
+<p align="center">
+  Figure 5.5a. Collaboration join latency by client count and deployment stage.
+</p>
 
 <p align="center">
   <img src="assets/collaboration-propagation.png" alt="Update propagation latency by client count and deployment stage" width="780" />
 </p>
-*Figure 5.5b. Update propagation latency by client count and deployment stage.*
+<p align="center">
+  Figure 5.5b. Update propagation latency by client count and deployment stage.
+</p>
 
 <p align="center">
   <img src="assets/collaboration-throughput.png" alt="Update throughput by client count and deployment stage" width="780" />
 </p>
-*Figure 5.5c. Update throughput by client count and deployment stage.*
+<p align="center">
+  Figure 5.5c. Update throughput by client count and deployment stage.
+</p>
 
 <p align="center">
   <img src="assets/memory-growth.png" alt="RSS memory delta by client count and deployment stage" width="780" />
 </p>
-*Figure 5.5d. RSS memory delta by client count and deployment stage.*
+<p align="center">
+  Figure 5.5d. RSS memory delta by client count and deployment stage.
+</p>
 
 **Interpretation:** Two separate effects are visible here. First, RSS delta scales with client count almost identically across all four environments (~46MB at 100 clients regardless of stage); that scaling is a property of the application process itself rather than the surrounding infrastructure. Second, update propagation latency at a fixed client count grows significantly once redis/nginx are introduced (8.58ms → 53-70ms at 100 clients) because each update traverses additional communication layers (Redis Pub/Sub and/or Nginx reverse proxy) before reaching every subscribed client.
 
@@ -225,12 +242,16 @@ A quick overview before the detailed breakdown below. All figures are at 100 con
 <p align="center">
   <img src="assets/connection-scale-join-latency.png" alt="Connection join latency at scale across deployment stages" width="780" />
 </p>
-*Figure 5.6a. Connection join latency at scale across deployment stages.*
+<p align="center">
+  Figure 5.6a. Connection join latency at scale across deployment stages.
+</p>
 
 <p align="center">
   <img src="assets/peak-connections.png" alt="Peak concurrent connections handled across deployment stages" width="780" />
 </p>
-*Figure 5.6b. Peak concurrent connections handled across deployment stages.*
+<p align="center">
+  Figure 5.6b. Peak concurrent connections handled across deployment stages.
+</p>
 
 **Interpretation:** This is the most significant result in the evaluation. Avg join latency increases roughly 55-65x from baseline to redis/nginx, and P95 increases roughly 175-195x, while success rate holds at 100% throughout; connections are not failing; instead, they are queueing. Peak concurrent connections remain below the baseline in the scaled configurations, with some variation between Redis and Nginx.
 
